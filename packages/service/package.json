@@ -7,13 +7,13 @@
     "lint": "eslint 'src/**/*.{ts,js}' --fix"
   },
   "dependencies": {
-    "fastify": "^4.0.0",
-    "fastify-openapi-glue": "^2.0.0",
-    "@fastify/swagger": "^4.7.0",
+    "fastify": "^5.0.0",
+    "fastify-openapi-glue": "^4.7.1",
+    "@fastify/swagger": "^9.2.0",
     "ajv-errors": "^3.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "esbuild": "^0.14.39"
+    "typescript": "^5.6.3",
+    "esbuild": "^0.24.0"
   }
 }

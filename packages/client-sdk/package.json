@@ -5,6 +5,6 @@
     "build": "./openapi-client-generator.sh"
   },
   "dependencies": {
-    "openapi-generator-cli": "^5.0.0"
+    "openapi-typescript": "^7.4.1"
   }
 }

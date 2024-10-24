@@ -1,0 +1,21 @@
+{
+  "name": "corporate-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^1.10.0",
+    "prettier": "^2.8.8",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0",
+    "c8": "^8.0.0"
+  }
+}

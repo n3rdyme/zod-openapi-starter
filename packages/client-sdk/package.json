@@ -1,0 +1,10 @@
+{
+  "name": "client-sdk",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "./openapi-client-generator.sh"
+  },
+  "dependencies": {
+    "openapi-generator-cli": "^5.0.0"
+  }
+}

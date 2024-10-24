@@ -1,0 +1,13 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint 'src/**/*.{ts,js}' --fix"
+  },
+  "dependencies": {
+    "zod": "^3.11.6",
+    "zod-to-openapi": "^2.1.1"
+  }
+}

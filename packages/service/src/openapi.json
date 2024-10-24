@@ -1,0 +1,22 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/custom-validate": {
+      "post": {
+        "summary": "Custom validation",
+        "responses": {
+          "200": {
+            "description": "Successful validation"
+          },
+          "400": {
+            "description": "Validation errors"
+          }
+        }
+      }
+    }
+  }
+}

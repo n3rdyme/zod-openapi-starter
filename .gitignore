@@ -1,4 +1,7 @@
 node_modules
 dist
 coverage
+generated
 *.log
+.turbo
+install-state.gz

@@ -6,10 +6,10 @@ import { CreateTodoRequest, ErrorDetails, TodoItem } from "../generated/index.mj
  */
 export const createTodo = async (request: CreateTodoRequest, context: any): Promise<TodoItem> => {
   return {
-    "id": "9624c4e5-d4c2-fd53-24a3-db9575835dd6",
-    "title": "et esse",
-    "description": "tempor",
-    "completed": false
+    "id": "3f5a5938-1467-3203-b674-0702934e9625",
+    "title": "deserunt cupidatat",
+    "description": "dolore veniam quis",
+    "completed": true
   };
 };
 
@@ -108,22 +108,41 @@ export const createTodo = async (request: CreateTodoRequest, context: any): Prom
               "issues": {
                 "type": "array",
                 "items": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
+                  "oneOf": [
                     {
                       "type": "object",
                       "properties": {},
                       "additionalProperties": true
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
                     }
                   ]
                 }
               },
               "data": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": true
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
               }
             },
             "required": [

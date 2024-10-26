@@ -70,22 +70,41 @@ export const deleteTodo = async (request: { id: string }, context: any): Promise
               "issues": {
                 "type": "array",
                 "items": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
+                  "oneOf": [
                     {
                       "type": "object",
                       "properties": {},
                       "additionalProperties": true
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
                     }
                   ]
                 }
               },
               "data": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": true
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
               }
             },
             "required": [

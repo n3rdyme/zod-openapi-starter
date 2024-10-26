@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { writeFileSync } from "fs";
 import path from "path";
 import { z } from "zod";

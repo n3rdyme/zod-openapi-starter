@@ -6,10 +6,10 @@ import { ErrorDetails, TodoItem, UpdateTodoRequest } from "../generated/index.mj
  */
 export const updateTodo = async (request: { id: string } & UpdateTodoRequest, context: any): Promise<TodoItem> => {
   return {
-    "id": "e0fd5564-673e-7669-a583-4ea3a8e905fb",
-    "title": "labore officia",
-    "description": "anim qui culpa eu",
-    "completed": false
+    "id": "583e5b32-fc77-685b-38bc-f1c4a1fb6747",
+    "title": "in fugiat ipsum velit aliquip",
+    "description": "officia consequat mollit eu",
+    "completed": true
   };
 };
 
@@ -108,22 +108,41 @@ export const updateTodo = async (request: { id: string } & UpdateTodoRequest, co
               "issues": {
                 "type": "array",
                 "items": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
+                  "oneOf": [
                     {
                       "type": "object",
                       "properties": {},
                       "additionalProperties": true
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
                     }
                   ]
                 }
               },
               "data": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": true
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
               }
             },
             "required": [

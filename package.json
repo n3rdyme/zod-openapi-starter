@@ -10,7 +10,7 @@
     "preinstall": "echo $npm_execpath | grep -q yarn || (echo 'Please use yarn instead of npm, to install run:\nnpm i -g yarn\n' && exit 1)",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "format": "prettier --write ./package.json ./packages/**/*.json ./packages/**/*.m?ts",
+    "format": "prettier --log-level warn --write ./package.json ./packages/**/*.{json,ts,cjs,mjs,mts}",
     "test": "turbo run test",
     "watch": "yarn workspace @local/service watch",
     "for-each": "turbo run for-each --"

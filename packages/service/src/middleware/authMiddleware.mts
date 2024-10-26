@@ -1,8 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function authMiddleware(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-  return;
-
+export async function authMiddleware(_request: FastifyRequest, _reply: FastifyReply): Promise<void> {
   // // Implement JWT bearer token validation
   // const authHeader = request.headers.authorization;
   // if (!authHeader || !authHeader.startsWith("Bearer ")) {

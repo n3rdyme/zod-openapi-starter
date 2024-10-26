@@ -6,11 +6,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@api/*": ["./packages/api/src/*"],
-      "@service/*": ["./packages/service/src/*"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["packages/**/*"],
   "exclude": ["node_modules", "dist"]

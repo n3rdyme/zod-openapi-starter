@@ -1,16 +1,22 @@
 {
   "$schema": "https://turborepo.org/schema.json",
+  "cacheDir": ".turbo/cache",
+  "globalDependencies": ["package.json", "tsconfig.json", "yarn.lock"],
   "tasks": {
     "build": {
+      "outputLogs": "new-only",
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
     "lint": {
+      "outputLogs": "new-only",
+      "dependsOn": ["build"],
       "outputs": []
     },
     "test": {
+      "outputLogs": "new-only",
       "dependsOn": ["build"],
-      "outputs": []
+      "outputs": [""]
     },
     "for-each": {
       "cache": false,

@@ -23,7 +23,7 @@ async function main(...args: string[]) {
       title: "ToDo API",
       description: "This is the API",
     },
-    servers: [{ url: "v1" }],
+    servers: [{ url: "/" }],
   });
 
   const openapiJson = JSON.stringify(openApi, null, 2);

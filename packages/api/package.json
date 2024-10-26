@@ -6,18 +6,16 @@
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",
   "scripts": {
-    "build": "yarn build:code && yarn build:openapi && yarn build:types && yarn build:service",
+    "build": "yarn build:code && yarn build:openapi && yarn build:orval",
     "build:code": "tsc",
     "build:openapi": "node ./dist/generate.mjs ./openapi.json",
-    "build:types": "NODE_NO_WARNINGS=1 openapi-typescript ./dist/openapi.json -o ./dist/openapi.d.ts",
-    "build:service": "NODE_NO_WARNINGS=1 orval orval.config.js",
+    "build:orval": "NODE_NO_WARNINGS=1 orval orval.config.js",
     "lint": "eslint --fix --max-warnings=0 ./src",
     "for-each": "yarn"
   },
   "devDependencies": {
     "@asteasolutions/zod-to-openapi": "^7.2.0",
     "json-schema-faker": "^0.5.6",
-    "openapi-typescript": "^7.4.1",
     "typescript": "^5.6.3"
   },
   "dependencies": {

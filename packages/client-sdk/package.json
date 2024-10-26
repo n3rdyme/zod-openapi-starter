@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "dist/index.mjs",
   "scripts": {
-    "build": "echo ./openapi-client-generator.sh",
+    "build": "tsc",
     "lint": "eslint --fix --max-warnings=0 ./src",
     "for-each": "yarn"
   },

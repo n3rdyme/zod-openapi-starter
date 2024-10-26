@@ -1,7 +1,7 @@
 import { FastifyRequest } from "fastify";
 
 // Create a custom Pino configuration
-export const customLogger = {
+export const loggerOptions = {
   level: "info", // Set the log level
   transport: {
     target: "pino-pretty", // Optional, for pretty-printing logs

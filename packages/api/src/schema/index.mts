@@ -6,10 +6,8 @@ const ErrorSchema = z
     statusCode: z.number().int().openapi({ format: "int32" }),
     code: z.string().optional(),
     message: z.string().default("Unknown Error"),
-    issues: z
-      .array(z.union([z.string(), z.object({}).passthrough().openapi({ additionalProperties: true })]))
-      .optional(),
-    data: z.object({}).passthrough().openapi({ additionalProperties: true }).optional(),
+    issues: z.array(z.any()).optional(),
+    data: z.any().optional(),
   })
   .openapi("ErrorDetails");
 

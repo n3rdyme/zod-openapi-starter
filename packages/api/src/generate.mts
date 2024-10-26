@@ -1,7 +1,9 @@
-import { extendZodWithOpenApi, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { writeFileSync } from "fs";
 import path from "path";
 import { z } from "zod";
+import { extendZodWithOpenApi, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
+import { hookGenerateSchemaWithMetadata } from "./generate/hookGenerateSchemaWithMetadata.mjs";
 
 async function main(...args: string[]) {
   const targetFile = args[0];
@@ -10,11 +12,11 @@ async function main(...args: string[]) {
 
   // 2. Register definitions here
   const registry = await import("./schema/registry.mjs");
-
   await import("./schema/index.mjs");
 
   // 3. Generate OpenAPI components
   const generator = new OpenApiGeneratorV3(registry.default.definitions);
+  hookGenerateSchemaWithMetadata(generator);
 
   const openApi = generator.generateDocument({
     openapi: "3.0.0",

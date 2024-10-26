@@ -8,13 +8,16 @@ import { authMiddleware } from "../middleware/authMiddleware.mjs";
 import { errorHandler } from "../middleware/errorHandler.mjs";
 import { loggerOptions } from "../middleware/logger.mjs";
 import { fastifyHandlers } from "../service/fastifyHandlers.mjs";
-import { createAjv } from "../middleware/ajv-validation.mjs";
+import { ajvDefaultOptions, createAjv } from "../middleware/ajv-validation.mjs";
 
 import openApiSpec from "@local/api";
 
 function createFastify() {
   // Create Fastify instance
-  const fastify = Fastify({ logger: loggerOptions });
+  const fastify = Fastify({
+    logger: loggerOptions,
+    ajv: { customOptions: { ...ajvDefaultOptions, removeAdditional: false } },
+  });
 
   const swaggerOptions: SwaggerOptions & FastifyStaticSwaggerOptions = {
     mode: "static",

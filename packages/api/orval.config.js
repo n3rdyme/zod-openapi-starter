@@ -34,6 +34,9 @@ module.exports = defineConfig({
     },
     input: {
       target: "./dist/openapi.json",
+      parserOptions: {
+        validate: false,
+      },
     },
   },
   service: {
@@ -73,6 +76,9 @@ module.exports = defineConfig({
     },
     input: {
       target: "./dist/openapi.json",
+      parserOptions: {
+        validate: false,
+      },
     },
   },
 });

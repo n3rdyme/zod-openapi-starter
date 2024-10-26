@@ -8,16 +8,10 @@ export const getTodos = async (request: unknown, context: any): Promise<TodoItem
   return {
     "items": [
       {
-        "id": "515aa0c7-8057-a6d8-0615-7e4e2fa87a70",
-        "title": "minim tempor",
-        "description": "nisi",
+        "id": "cb485c09-90b8-4baf-a979-bef49e8c0bf0",
+        "title": "sed",
+        "description": "dolore non pariatur ullamco exercitation",
         "completed": false
-      },
-      {
-        "id": "3109fc06-5423-d07f-4b65-aaa9481c9e06",
-        "title": "consequat eiusmod do qui",
-        "description": "deserunt consequat mollit aliquip",
-        "completed": true
       }
     ]
   };

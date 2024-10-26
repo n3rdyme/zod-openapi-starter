@@ -6,9 +6,9 @@ import { ErrorDetails, TodoItem, UpdateTodoRequest } from "../generated/index.mj
  */
 export const updateTodo = async (request: { id: string } & UpdateTodoRequest, context: any): Promise<TodoItem> => {
   return {
-    "id": "c53dfe1c-c347-bcd2-40f4-e97cd1125b78",
-    "title": "et in eiusmod nostrud",
-    "description": "magna ullamco et esse est",
+    "id": "e0fd5564-673e-7669-a583-4ea3a8e905fb",
+    "title": "labore officia",
+    "description": "anim qui culpa eu",
     "completed": false
   };
 };

@@ -7,8 +7,75 @@ const fs = require("fs");
 
 const operations = {};
 
-const serviceOutput = "../service/src/service";
+const serviceOutput = "../service/src/generated";
 const clientOutput = "../client-sdk/src/generated";
+
+module.exports = defineConfig({
+  sdk: {
+    output: {
+      mode: "single",
+      target: path.join(clientOutput, "sdk.mts"),
+      schemas: path.join(clientOutput, "types/"),
+      client: "fetch",
+      fileExtension: ".mts",
+      mock: false,
+      prettier: false,
+      override: {
+        mutator: {
+          path: path.join(clientOutput, "../sdkFetch.mts"),
+          name: "sdkFetch",
+        },
+      },
+    },
+    hooks: {
+      afterAllFilesWrite: () => {
+        fixAllImportExtensions(clientOutput);
+      },
+    },
+    input: {
+      target: "./dist/openapi.json",
+    },
+  },
+  service: {
+    output: {
+      mode: "single",
+      target: "../service/src/service/fastifyHandlers.mts",
+      schemas: "../service/src/generated",
+      client: "fetch",
+      fileExtension: ".mts",
+      mock: false,
+      prettier: false,
+      override: {
+        transformer: (arg) => {
+          operations[arg.operationId] = arg;
+          return arg;
+        },
+      },
+    },
+    hooks: {
+      afterAllFilesWrite: () => {
+        fixAllImportExtensions(serviceOutput);
+        const fastifyHandlers = path.join(serviceOutput, "../service/fastifyHandlers.mts");
+        // Ensure handlers directory exists
+        const handlersDir = path.join(serviceOutput, "../handlers");
+        if (!fs.existsSync(handlersDir)) {
+          fs.mkdirSync(handlersDir, { recursive: true });
+        }
+
+        // Write handlers stub if missing
+        Object.entries(operations)
+          .map(([name, value]) => ({ name, file: path.join(handlersDir, `${name}.mts`), value }))
+          // .filter(({ file }) => !fs.existsSync(file))
+          .forEach(generateApiFunction);
+        // Overwrite fastifyHandlers
+        generateFastifyHandlers(fastifyHandlers);
+      },
+    },
+    input: {
+      target: "./dist/openapi.json",
+    },
+  },
+});
 
 /**
  * Orval does not support .mjs files, so we need to convert all .mts files to .mjs imports
@@ -58,134 +125,72 @@ function fixAllImportExtensions(directory) {
   });
 }
 
-module.exports = defineConfig({
-  sdk: {
-    output: {
-      mode: "single",
-      target: path.join(clientOutput, "sdk.mts"),
-      schemas: path.join(clientOutput, "types/"),
-      client: "fetch",
-      fileExtension: ".mts",
-      mock: false,
-      prettier: false,
-      override: {
-        mutator: {
-          path: path.join(clientOutput, "../sdkFetch.mts"),
-          name: "sdkFetch",
-        },
-      },
-    },
-    hooks: {
-      afterAllFilesWrite: () => {
-        fixAllImportExtensions(clientOutput);
-      },
-    },
-    input: {
-      target: "./dist/openapi.json",
-    },
-  },
-  service: {
-    output: {
-      mode: "single",
-      target: "../service/src/service/fastifyHandlers.mts",
-      schemas: "../service/src/generated",
-      client: "fetch",
-      fileExtension: ".mts",
-      mock: false,
-      prettier: false,
-      override: {
-        transformer: (arg) => {
-          operations[arg.operationId] = arg;
-          return arg;
-        },
-      },
-    },
-    hooks: {
-      afterAllFilesWrite: () => {
-        fixAllImportExtensions("../service/src/generated");
-        const methods = Object.keys(operations);
-        const fastifyHandlers = path.join(serviceOutput, "fastifyHandlers.mts");
-        // Ensure handlers directory exists
-        const handlersDir = path.join(serviceOutput, "../handlers");
-        if (!fs.existsSync(handlersDir)) {
-          fs.mkdirSync(handlersDir, { recursive: true });
-        }
+function generateApiFunction({ name, file, value: { doc, ...value } }) {
+  const data = JSON.stringify(value, null, 2);
+  const imports = [
+    ...(value.body?.imports ?? []),
+    ...(value.params?.imports ?? []),
+    ...(value.response?.imports ?? []),
+  ].reduce((acc, { name, schemaName }) => ({ ...acc, [name]: schemaName }), {});
 
-        // Write handlers stub if missing
-        Object.entries(operations)
-          .map(([name, value]) => ({ name, file: path.join(handlersDir, `${name}.mts`), value }))
-          // .filter(({ file }) => !fs.existsSync(file))
-          .forEach(({ name, file, value: { doc, ...value } }) => {
-            const data = JSON.stringify(value, null, 2);
-            const imports = [
-              ...(value.body?.imports ?? []),
-              ...(value.params?.imports ?? []),
-              ...(value.response?.imports ?? []),
-            ].reduce((acc, { name, schemaName }) => ({ ...acc, [name]: schemaName }), {});
+  const reqType = !value.props?.length
+    ? "unknown"
+    : value.props
+        .map((p) => {
+          if (p.type === "body") {
+            return p.implementation.substring(p.implementation.indexOf(":") + 1).trim();
+          }
+          return `{ ${p.definition} }`;
+        })
+        .join(" & ");
 
-            const reqType = !value.props?.length
-              ? "unknown"
-              : value.props
-                  .map((p) => {
-                    if (p.type === "body") {
-                      return p.implementation.substring(p.implementation.indexOf(":") + 1).trim();
-                    }
-                    return `{ ${p.definition} }`;
-                  })
-                  .join(" & ");
+  const resType = value.response?.definition?.success ?? "void";
+  let sampleResponse = "";
+  if (resType !== "void") {
+    const schema = {
+      components: openapiSpec.components,
+      ...(value.response?.types?.success?.[0]?.originalSchema ?? { type: "object" }),
+    };
 
-            const resType = value.response?.definition?.success ?? "void";
-            let sampleResponse = "";
-            if (resType !== "void") {
-              const schema = {
-                components: openapiSpec.components,
-                ...(value.response?.types?.success?.[0]?.originalSchema ?? { type: "object" }),
-              };
+    sampleResponse = " " + JSON.stringify(JSONSchemaFaker.generate(schema), null, 2).replace(/\n/g, "\n  ");
+  }
 
-              sampleResponse = " " + JSON.stringify(JSONSchemaFaker.generate(schema), null, 2).replace(/\n/g, "\n  ");
-            }
+  fs.writeFileSync(
+    file,
+    [
+      `/* eslint-disable */`,
+      ...(Object.keys(imports).length
+        ? [`import { ${Object.keys(imports).sort().join(", ")} } from "../generated/index.mjs";`, ""]
+        : []),
+      `${doc?.trim() ?? ""}`,
+      `export const ${name} = async (request: ${reqType}, context: any): Promise<${resType}> => {`,
+      `  return${sampleResponse};`,
+      `};`,
+      "",
+      `/* ${data} */`,
+      ``,
+    ].join("\n"),
+    "utf-8",
+  );
+}
 
-            fs.writeFileSync(
-              file,
-              [
-                `/* eslint-disable */`,
-                ...(Object.keys(imports).length
-                  ? [`import { ${Object.keys(imports).sort().join(", ")} } from "../generated/index.mjs";`, ""]
-                  : []),
-                `${doc?.trim() ?? ""}`,
-                `export const ${name} = async (request: ${reqType}, context: any): Promise<${resType}> => {`,
-                `  return${sampleResponse};`,
-                `};`,
-                "",
-                `/* ${data} */`,
-                ``,
-              ].join("\n"),
-              "utf-8",
-            );
-          });
-        // Overwrite fastifyHandlers
-        fs.writeFileSync(
-          fastifyHandlers,
-          [
-            `/* eslint-disable */`,
-            `import { FastifyRequest, FastifyReply } from "fastify";`,
-            `import { fastifyStub } from "./fastifyStub.mjs";`,
-            ``,
-            `export const fastifyHandlers: { [key: string]: (req: FastifyRequest, res: FastifyReply) => unknown } = {`,
-            ...Object.entries(operations).map(([name, value]) => {
-              const success = value.response?.types?.success?.length !== 1 ? null : value.response.types.success[0];
-              const data = { name, successCode: success?.key ?? "200", contentType: success?.contentType };
-              return `  ${name}: (req, response) => fastifyStub(req, response, import("../handlers/${name}.mjs"), ${JSON.stringify(data)}),`;
-            }),
-            `};`,
-            ``,
-          ].join("\n"),
-          "utf-8",
-        );
-      },
-    },
-    input: {
-      target: "./dist/openapi.json",
-    },
-  },
-});
+function generateFastifyHandlers(fastifyHandlers) {
+  fs.writeFileSync(
+    fastifyHandlers,
+    [
+      `/* eslint-disable */`,
+      `import { FastifyRequest, FastifyReply } from "fastify";`,
+      `import { fastifyStub } from "./fastifyStub.mjs";`,
+      ``,
+      `export const fastifyHandlers: { [key: string]: (req: FastifyRequest, res: FastifyReply) => unknown } = {`,
+      ...Object.entries(operations).map(([name, value]) => {
+        const success = value.response?.types?.success?.length !== 1 ? null : value.response.types.success[0];
+        const data = { name, successCode: success?.key ?? "200", contentType: success?.contentType };
+        return `  ${name}: (req, response) => fastifyStub(req, response, import("../handlers/${name}.mjs"), ${JSON.stringify(data)}),`;
+      }),
+      `};`,
+      ``,
+    ].join("\n"),
+    "utf-8",
+  );
+}

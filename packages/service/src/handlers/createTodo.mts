@@ -6,8 +6,9 @@ import { CreateTodoRequest, ErrorDetails, TodoItem } from "../generated/index.mj
  */
 export const createTodo = async (request: CreateTodoRequest, context: any): Promise<TodoItem> => {
   return {
-    "id": "741963fa-1b5d-078a-dabc-e8b04e6d91ff",
-    "title": "ipsum minim",
+    "id": "9624c4e5-d4c2-fd53-24a3-db9575835dd6",
+    "title": "et esse",
+    "description": "tempor",
     "completed": false
   };
 };

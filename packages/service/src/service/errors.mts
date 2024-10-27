@@ -1,28 +1,5 @@
 import createError from "@fastify/error";
 
-function makeError(httpStatusCode: number, grpcStatusCode: number, name: string, code: string, reason: string) {
-  return class ServerError extends createError("SVC_" + code, reason, httpStatusCode, Error) {
-    readonly grpcCode: number;
-    issues: (string | object)[] | undefined;
-    data: unknown;
-
-    constructor(
-      message?: string | undefined,
-      options?: Omit<ErrorOptions, "cause"> & { cause: Error; issues?: Array<string | object>; data?: unknown },
-    ) {
-      super(message ?? reason, options);
-      this.grpcCode = grpcStatusCode;
-      this.issues = options?.issues;
-      this.data = options?.data;
-      this.cause = options?.cause;
-      this.message = message ?? reason;
-      this.name = name;
-
-      Object.setPrototypeOf(this, ServerError.prototype);
-    }
-  };
-}
-
 /*
 GREP REPLACE:
 /\*\* (\d+) (\w+) (\w+)\s+(\d+)\s+([\w ']+).*
@@ -77,3 +54,29 @@ export const UnrecoverableError = // 500 UnrecoverableError
 /** 401 UnauthorizedError UNAUTHENTICATED	16	The request does not have valid authentication credentials for the operation. */
 export const UnauthorizedError = // 401 UnauthorizedError
   makeError(401, 16, "UnauthorizedError", "UNAUTHENTICATED", "The request is missing valid credentials");
+
+/**
+ * Creates a new error class
+ */
+function makeError(httpStatusCode: number, grpcStatusCode: number, name: string, code: string, reason: string) {
+  return class ServerError extends createError("SVC_" + code, reason, httpStatusCode, Error) {
+    readonly grpcCode: number;
+    issues: (string | object)[] | undefined;
+    data: unknown;
+
+    constructor(
+      message?: string | undefined,
+      options?: { cause?: Error; issues?: Array<string | object>; data?: unknown },
+    ) {
+      super(message ?? reason, options);
+      this.grpcCode = grpcStatusCode;
+      this.issues = options?.issues;
+      this.data = options?.data;
+      this.cause = options?.cause;
+      this.message = message ?? reason;
+      this.name = name;
+
+      Object.setPrototypeOf(this, ServerError.prototype);
+    }
+  };
+}

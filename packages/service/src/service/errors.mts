@@ -1,6 +1,9 @@
 import createError from "@fastify/error";
 
 /*
+The following block of comments is used to generate the error classes below.
+These error classes are based on the gRPC status codes and the related HTTP status codes.
+
 GREP REPLACE:
 /\*\* (\d+) (\w+) (\w+)\s+(\d+)\s+([\w ']+).*
 $0\nexport const $2 = // $1 $2\n  makeError($1, $4, "$2", "$3", "$5");

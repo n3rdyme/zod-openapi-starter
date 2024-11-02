@@ -4,7 +4,8 @@ import { fastifySwagger, SwaggerOptions, FastifyStaticSwaggerOptions, StaticDocu
 import { fastifySwaggerUi, FastifySwaggerUiOptions } from "@fastify/swagger-ui";
 import { fastifyOpenapiGlue, type FastifyOpenapiGlueOptions } from "fastify-openapi-glue";
 import { fastifyResponseValidation, type FastifyResponseValidationOptions } from "../middleware/responseValidation.mjs";
-import fastifyJwt from "@fastify/jwt";
+import fastifyCors, { type FastifyCorsOptions } from "@fastify/cors";
+import fastifyJwt, { type FastifyJWTOptions } from "@fastify/jwt";
 import { authMiddleware } from "../middleware/authMiddleware.mjs";
 import { errorHandler } from "../middleware/errorHandler.mjs";
 import { loggerOptions } from "../middleware/logger.mjs";
@@ -39,10 +40,12 @@ function createFastify() {
   });
 
   // Register Fastify authentication plugin
-  fastify.register(fastifyJwt, {
+  const jwtOptions: FastifyJWTOptions = {
     // Use environment option 'JWT_SECRET' with an actual secure value in production
     secret: environment.jwtSecret,
-  });
+  };
+
+  fastify.register(fastifyJwt, jwtOptions);
 
   // JWT Sign and Verify Helpers
   fastify.decorate("authenticate", authMiddleware);
@@ -88,6 +91,16 @@ function createFastify() {
 
   // Register FastifyOpenAPIGlue for routing and validation
   fastify.register(fastifyOpenapiGlue, glueOptions);
+
+  const corsOptions: FastifyCorsOptions = {
+    origin: environment.corsOrigin?.split(";") ?? ["*"], // Allow specific origins
+    methods: ["post", "put", "delete", "patch", "head"], // Allow specific HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
+    credentials: true, // Allow credentials (e.g., cookies, authorization headers)
+    maxAge: 86400, // Cache preflight request response for 1 day (in seconds)$
+  };
+
+  fastify.register(fastifyCors, corsOptions);
 
   // Error handler
   fastify.setErrorHandler(errorHandler);

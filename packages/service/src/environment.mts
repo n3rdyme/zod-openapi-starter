@@ -11,6 +11,7 @@ function loadEnvironmentData(): EnvironmentData {
     logLevel: (process.env.LOG_LEVEL ?? "debug") as EnvironmentData["logLevel"],
     port: parseInt(process.env.PORT || process.env.NODE_PORT || "3000"),
     jwtSecret: process.env.JWT_SECRET,
+    corsOrigin: process.env.CORS_ORIGIN,
   };
 
   if (envData.env !== "production") {

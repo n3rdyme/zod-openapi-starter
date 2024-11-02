@@ -7,5 +7,6 @@ export const EnvironmentDataSchema = z
     port: z.number(),
     host: z.string().optional(),
     jwtSecret: z.string().min(21),
+    corsOrigin: z.string().optional(),
   })
   .openapi("EnvironmentData");

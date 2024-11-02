@@ -55,7 +55,7 @@ export default [
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
-          argsIgnorePattern: "(^_|request|context)",
+          argsIgnorePattern: "(^_|request|response|context)",
         },
       ],
       "import/extensions": [

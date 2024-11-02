@@ -1,5 +1,5 @@
-import type { ApiContext } from "../middleware/requestContext.mjs";
-import { CreateTodoRequest, TodoItem } from "../generated/index.mjs";
+import type { ApiContext } from "../../interfaces/apiContext.mjs";
+import { CreateTodoRequest, TodoItem } from "../../generated/index.mjs";
 /**
  * Create a new to-do item
  */

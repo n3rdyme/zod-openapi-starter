@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { InternalServerError, NotImplementedError } from "./errors.mjs";
-import { ApiContext } from "../middleware/requestContext.mjs";
+import { ApiContext } from "../interfaces/apiContext.mjs";
 
 /**
  * Entrypoint for all fastify handlers, calls the implementation method and sends the response or throws an error
@@ -31,6 +31,9 @@ export const fastifyStub = async (
     throw new NotImplementedError(`Function ${name} not implemented`);
   }
   if (typeof func !== "function") {
+    if (func?.error) {
+      console.error(func.error);
+    }
     throw new InternalServerError(`Function ${name} is not a function`);
   }
   const statusCode = parseInt(`${successCodeText}`, 10);
@@ -38,13 +41,15 @@ export const fastifyStub = async (
     throw new InternalServerError(`Invalid success code  ${name}:${successCodeText}`);
   }
 
+  if (!request.apiContext) {
+    throw new InternalServerError("API Context not initialized");
+  }
+
   const context: ApiContext = {
+    ...request.apiContext,
     name,
     statusCode,
     contentType: contentType || "application/json",
-    request,
-    response,
-    logger: request.log,
   };
 
   const result = await func(Object.assign({}, request.query, request.params, request.body), context);

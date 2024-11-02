@@ -1,5 +1,5 @@
-import type { ApiContext } from "../middleware/requestContext.mjs";
-import { TodoItemList } from "../generated/index.mjs";
+import type { ApiContext } from "../../interfaces/apiContext.mjs";
+import { TodoItemList } from "../../generated/index.mjs";
 
 export type GetTodosParams = {
   completed?: boolean;

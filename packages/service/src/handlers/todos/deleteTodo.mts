@@ -1,4 +1,4 @@
-import type { ApiContext } from "../middleware/requestContext.mjs";
+import type { ApiContext } from "../../interfaces/apiContext.mjs";
 /**
  * Delete a to-do item by ID
  */

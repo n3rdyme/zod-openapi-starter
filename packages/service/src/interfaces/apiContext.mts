@@ -1,4 +1,5 @@
 import { FastifyBaseLogger, FastifyReply, FastifyRequest } from "fastify";
+import { UserToken } from "./userToken.mjs";
 
 export interface ApiContext {
   name: string;
@@ -9,4 +10,12 @@ export interface ApiContext {
   response: FastifyReply;
 
   logger: FastifyBaseLogger;
+
+  user: UserToken;
+}
+
+declare module "fastify" {
+  interface FastifyRequest {
+    apiContext?: ApiContext;
+  }
 }

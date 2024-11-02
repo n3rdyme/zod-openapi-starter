@@ -1,9 +1,10 @@
 import Fastify from "fastify";
+import { nanoid } from "nanoid";
 import { fastifySwagger, SwaggerOptions, FastifyStaticSwaggerOptions, StaticDocumentSpec } from "@fastify/swagger";
 import { fastifySwaggerUi, FastifySwaggerUiOptions } from "@fastify/swagger-ui";
 import { fastifyOpenapiGlue, type FastifyOpenapiGlueOptions } from "fastify-openapi-glue";
-
 import { fastifyResponseValidation, type FastifyResponseValidationOptions } from "../middleware/responseValidation.mjs";
+import fastifyJwt from "@fastify/jwt";
 import { authMiddleware } from "../middleware/authMiddleware.mjs";
 import { errorHandler } from "../middleware/errorHandler.mjs";
 import { loggerOptions } from "../middleware/logger.mjs";
@@ -17,7 +18,33 @@ function createFastify() {
   const fastify = Fastify({
     logger: loggerOptions,
     ajv: { customOptions: { ...ajvDefaultOptions, removeAdditional: false } },
+    genReqId: () => nanoid(21),
   });
+
+  fastify.addHook("onRequest", async (request, response) => {
+    request.apiContext = {
+      name: `${request.method} ${request.url}`,
+      statusCode: 200,
+      contentType: "application/json",
+      request,
+      response,
+      logger: response.log,
+      user: {
+        username: "",
+        timestamp: 0,
+        roles: [],
+      },
+    };
+  });
+
+  // Register Fastify authentication plugin
+  fastify.register(fastifyJwt, {
+    // Use environment option 'JWT_SECRET' with an actual secure value in production
+    secret: process.env.JWT_SECRET || "one-string-to-rule-them-all",
+  });
+
+  // JWT Sign and Verify Helpers
+  fastify.decorate("authenticate", authMiddleware);
 
   const swaggerOptions: SwaggerOptions & FastifyStaticSwaggerOptions = {
     mode: "static",
@@ -53,13 +80,13 @@ function createFastify() {
     serviceHandlers: fastifyHandlers, // Path to your service handlers
     // noAdditional: true,
     prefix: undefined,
+    securityHandlers: {
+      BearerAuth: authMiddleware,
+    },
   };
 
   // Register FastifyOpenAPIGlue for routing and validation
   fastify.register(fastifyOpenapiGlue, glueOptions);
-
-  // Add JWT authentication middleware
-  fastify.addHook("onRequest", authMiddleware);
 
   // Error handler
   fastify.setErrorHandler(errorHandler);

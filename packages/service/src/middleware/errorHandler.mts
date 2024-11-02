@@ -8,6 +8,12 @@ export function errorHandler(error: FastifyError, request: FastifyRequest, reply
   if (error) {
     reply.log.error(error);
   }
+
+  // Extract root-cause from SecurityError aggregation
+  if ((error as unknown as { errors: Error[] }).errors?.length === 1) {
+    error = (error as unknown as { errors: Error[] }).errors[0] as FastifyError;
+  }
+
   reply.status(error.statusCode || 500).send({
     statusCode: error.statusCode || 500,
     code: error.code,

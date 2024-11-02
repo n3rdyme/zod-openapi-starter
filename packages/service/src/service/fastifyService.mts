@@ -17,6 +17,7 @@ import { ajvDefaultOptions, createAjv } from "../middleware/ajv-validation.mjs";
 import openApiSpec from "@local/api";
 import { environment } from "../environment.mjs";
 import { ErrorDetails } from "../generated/errorDetails.mjs";
+import { fastifyTelemetry } from "./fastifyTelemetry.mjs";
 
 function createFastify() {
   // Create Fastify instance
@@ -137,6 +138,12 @@ function createFastify() {
 
   // Register FastifyOpenAPIGlue for routing and validation
   fastify.register(fastifyOpenapiGlue, glueOptions);
+
+  // **************************************************************** onError
+
+  if (environment.openTelemetry) {
+    fastifyTelemetry(fastify);
+  }
 
   // **************************************************************** onError
   // Error handler

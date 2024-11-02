@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { OpenAPIRegistry, RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { RouteParameter, ZodRequestBody } from "@asteasolutions/zod-to-openapi/dist/openapi-registry";
-import { z, ZodObject, type ZodTypeAny } from "zod";
+import { type ZodObject, type ZodTypeAny } from "zod";
+import { getApiExtensions } from "./options.mjs";
+import { getErrorSchema } from "./getErrorSchema.mjs";
 
 interface ApiEndpointRequest {
   description?: string;
@@ -24,12 +26,15 @@ type ApiEndpointResponse = ApiEndpointResponseContent | ApiEndpointResponseNoCon
 interface ApiEndpointFull {
   name: string;
   description?: string;
+  tags?: string[];
   method: Exclude<RouteConfig["method"], "get">;
   path: string;
   request?: RouteParameter | ApiEndpointRequest;
   query?: RouteParameter;
   response?: 204 | ZodTypeAny | ApiEndpointResponse;
+  roles?: string[];
 }
+
 interface ApiEndpointGet extends Omit<ApiEndpointFull, "method" | "request"> {
   method: "get";
 }
@@ -41,40 +46,6 @@ declare module "@asteasolutions/zod-to-openapi" {
     registerApi(api: ApiEndpoint): void;
   }
 }
-
-const getErrors = () => {
-  const ErrorSchema = z
-    .object({
-      statusCode: z.number().int().openapi({ format: "int32" }),
-      code: z.string().optional(),
-      message: z.string().default("Unknown Error"),
-      issues: z.array(z.any()).optional(),
-      data: z.any().optional(),
-    })
-    .openapi("ErrorDetails");
-
-  const code4xx: number = "4XX" as unknown as number;
-  const code5xx: number = "5XX" as unknown as number;
-
-  return {
-    [code5xx]: {
-      description: "Internal Server Error",
-      content: {
-        "application/json": {
-          schema: ErrorSchema,
-        },
-      },
-    },
-    [code4xx]: {
-      description: "Invalid Request Error",
-      content: {
-        "application/json": {
-          schema: ErrorSchema,
-        },
-      },
-    },
-  };
-};
 
 function repositoryRegisterApi(this: OpenAPIRegistry, api: ApiEndpoint) {
   const {
@@ -128,6 +99,7 @@ function repositoryRegisterApi(this: OpenAPIRegistry, api: ApiEndpoint) {
   ) as ApiEndpointResponseContent;
 
   const routeConfig: RouteConfig = {
+    ...getApiExtensions(),
     method: api.method,
     path: api.path,
     operationId: api.name,
@@ -159,8 +131,10 @@ function repositoryRegisterApi(this: OpenAPIRegistry, api: ApiEndpoint) {
               },
             }),
       },
-      ...getErrors(),
+      ...getErrorSchema(),
     },
+    ...(api.tags ? { tags: api.tags } : {}),
+    ...(api.roles ? { "x-roles": api.roles } : {}),
   };
 
   this.registerPath(routeConfig);

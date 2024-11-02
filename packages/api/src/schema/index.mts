@@ -1,5 +1,6 @@
 import { todoApi } from "./api/index.mjs";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
+import { registerAuth } from "./auth.mjs";
 
 /**
  * Register all API endpoints with the given OpenAPI registry
@@ -11,5 +12,6 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
  *
  */
 export function register(registry: OpenAPIRegistry) {
+  registerAuth(registry);
   todoApi.forEach((api) => registry.registerApi(api));
 }

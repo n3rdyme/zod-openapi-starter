@@ -67,10 +67,20 @@ module.exports = defineConfig({
 
         // Write handlers stub if missing
         Object.entries(operations)
-          .map(([name, value]) => ({ name, file: path.join(handlersDir, `${name}.mts`), value }))
-          // DEBUG:
-          .filter(({ file }) => !fs.existsSync(file))
-          .forEach(generateApiFunction);
+          .map(([name, value]) => ({
+            name,
+            file: path.join(handlersDir, value?.tags?.[0] ?? ".", `${name}.mts`),
+            value,
+          }))
+          .forEach((data) => {
+            const folder = path.dirname(data.file);
+            if (!fs.existsSync(folder)) {
+              fs.mkdirSync(folder, { recursive: true });
+            }
+            if (!fs.existsSync(data.file)) {
+              generateApiFunction(data);
+            }
+          });
         // Overwrite fastifyHandlers
         generateFastifyHandlers(fastifyHandlers);
       },
@@ -165,20 +175,21 @@ function generateApiFunction({ name, file, value: { doc, ...value } }) {
   }
 
   const query = value.queryParams?.schema?.model;
+  const svcRoot = !value.tags?.[0] ? "../" : "../../";
 
   fs.writeFileSync(
     file,
     [
-      `import type { ApiContext } from "../middleware/requestContext.mjs";`,
+      `import type { ApiContext } from "${svcRoot}interfaces/apiContext.mjs";`,
       ...(Object.keys(imports).length
-        ? [`import { ${Object.keys(imports).sort().join(", ")} } from "../generated/index.mjs";`]
+        ? [`import { ${Object.keys(imports).sort().join(", ")} } from "${svcRoot}generated/index.mjs";`]
         : []),
       ...(query ? ["", query] : []),
       ...(!doc ? [""] : [`${doc?.trim() ?? ""}`]),
       `export const ${name} = async (request: ${reqType}, context: ApiContext): Promise<${resType}> => {`,
       `  return${sampleResponse};`,
       `};`,
-      // DEBUG: ...["", `/* ${JSON.stringify(value, null, 2)} */`],
+      // DEBUG:      ...["", `/* ${JSON.stringify(value, null, 2)} */`],
       ``,
     ].join("\n"),
     "utf-8",
@@ -197,7 +208,8 @@ function generateFastifyHandlers(fastifyHandlers) {
       ...Object.entries(operations).map(([name, value]) => {
         const success = value.response?.types?.success?.length !== 1 ? null : value.response.types.success[0];
         const data = { name, successCode: success?.key ?? "200", contentType: success?.contentType };
-        return `  ${name}: (req, response) => fastifyStub(req, response, import("../handlers/${name}.mjs"), ${JSON.stringify(data)}),`;
+        const pthName = value?.tags?.[0] ? `${value?.tags?.[0]}/${name}` : name;
+        return `  ${name}: (req, response) => fastifyStub(req, response, import("../handlers/${pthName}.mjs"), ${JSON.stringify(data)}),`;
       }),
       `};`,
       ``,

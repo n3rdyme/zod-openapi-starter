@@ -13,6 +13,7 @@ import { UpdateTodoRequestSchema } from "./types/UpdateTodoRequestSchema.mjs";
 export const todoApi: ApiEndpoint[] = [
   {
     // Register the POST /todos endpoint to create a to-do
+    tags: ["todos"],
     name: "createTodo",
     description: "Create a new to-do item",
     method: "post",
@@ -22,30 +23,36 @@ export const todoApi: ApiEndpoint[] = [
       statusCode: 201,
       schema: TodoItemSchema,
     },
+    roles: ["write"],
   },
 
   // Register the GET /todos endpoint to retrieve the list of to-dos
   {
+    tags: ["todos"],
     name: "getTodos",
     description: "Retrieve a list of to-do items",
     method: "get",
     path: "/todos",
     query: z.object({ completed: z.boolean().optional() }),
     response: TodoItemListSchema,
+    roles: ["read"],
   },
 
   // Register the PUT /todos/{id} endpoint to update a to-do item by ID
   {
+    tags: ["todos"],
     name: "updateTodo",
     description: "Update an existing to-do item by ID",
     method: "put",
     path: "/todos/{id}",
     request: UpdateTodoRequestSchema,
     response: TodoItemSchema,
+    roles: ["write"],
   },
 
   // Register the DELETE /todos/{id} endpoint to delete a to-do item by ID
   {
+    tags: ["todos"],
     name: "deleteTodo",
     description: "Delete a to-do item by ID",
     method: "delete",
@@ -56,5 +63,6 @@ export const todoApi: ApiEndpoint[] = [
       }),
     }),
     response: 204,
+    roles: ["admin"],
   },
 ];

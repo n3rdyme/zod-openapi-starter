@@ -5,6 +5,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "all": "yarn build && yarn format && yarn lint && yarn test",
     "preinstall": "echo $npm_execpath | grep -q yarn || (echo 'Please use yarn instead of npm, to install run:\nnpm i -g yarn\n' && exit 1)",

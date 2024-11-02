@@ -33,7 +33,7 @@ const stringErrors: { [key: string]: string | undefined } = {
   emoji: "format",
 };
 
-export function hookGenerateSchemaWithMetadata(generator: OpenApiGeneratorV3 | OpenApiGeneratorV31) {
+export function hookGenerateSchemaWithMetadata<T extends OpenApiGeneratorV3 | OpenApiGeneratorV31>(generator: T): T {
   const openGen = (generator as any).generator;
 
   const original: any = openGen.generateSchemaWithMetadata;
@@ -70,4 +70,6 @@ export function hookGenerateSchemaWithMetadata(generator: OpenApiGeneratorV3 | O
 
     return result;
   };
+
+  return generator;
 }

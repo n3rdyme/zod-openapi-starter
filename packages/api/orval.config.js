@@ -132,18 +132,20 @@ function fixAllImportExtensions(directory) {
 }
 
 function generateApiFunction({ name, file, value: { doc, ...value } }) {
-  const data = JSON.stringify(value, null, 2);
   const imports = [
     ...(value.body?.imports ?? []),
     ...(value.params?.imports ?? []),
+    ...(value.queryParams?.schema?.imports ?? []),
     ...(value.response?.imports ?? []),
-  ].reduce((acc, { name, schemaName }) => ({ ...acc, [name]: schemaName }), {});
+  ]
+    .filter(({ name }) => name !== "ErrorDetails") // ErrorDetails is not used directly, throw the appropriate error instead
+    .reduce((acc, { name, schemaName }) => ({ ...acc, [name]: schemaName }), {});
 
   const reqType = !value.props?.length
     ? "unknown"
     : value.props
         .map((p) => {
-          if (p.type === "body") {
+          if (p.type === "body" || p.type === "queryParam") {
             return p.implementation.substring(p.implementation.indexOf(":") + 1).trim();
           }
           return `{ ${p.definition} }`;
@@ -161,19 +163,21 @@ function generateApiFunction({ name, file, value: { doc, ...value } }) {
     sampleResponse = " " + JSON.stringify(JSONSchemaFaker.generate(schema), null, 2).replace(/\n/g, "\n  ");
   }
 
+  const query = value.queryParams?.schema?.model;
+
   fs.writeFileSync(
     file,
     [
-      `/* eslint-disable */`,
+      `import type { ApiContext } from "../middleware/requestContext.mjs";`,
       ...(Object.keys(imports).length
-        ? [`import { ${Object.keys(imports).sort().join(", ")} } from "../generated/index.mjs";`, ""]
+        ? [`import { ${Object.keys(imports).sort().join(", ")} } from "../generated/index.mjs";`]
         : []),
-      `${doc?.trim() ?? ""}`,
-      `export const ${name} = async (request: ${reqType}, context: any): Promise<${resType}> => {`,
+      ...(query ? ["", query] : []),
+      ...(!doc ? [""] : [`${doc?.trim() ?? ""}`]),
+      `export const ${name} = async (request: ${reqType}, context: ApiContext): Promise<${resType}> => {`,
       `  return${sampleResponse};`,
       `};`,
-      "",
-      `/* ${data} */`,
+      // DEBUG: ...["", `/* ${JSON.stringify(value, null, 2)} */`],
       ``,
     ].join("\n"),
     "utf-8",

@@ -68,7 +68,8 @@ module.exports = defineConfig({
         // Write handlers stub if missing
         Object.entries(operations)
           .map(([name, value]) => ({ name, file: path.join(handlersDir, `${name}.mts`), value }))
-          // .filter(({ file }) => !fs.existsSync(file))
+          // DEBUG:
+          .filter(({ file }) => !fs.existsSync(file))
           .forEach(generateApiFunction);
         // Overwrite fastifyHandlers
         generateFastifyHandlers(fastifyHandlers);

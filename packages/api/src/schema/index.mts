@@ -1,6 +1,7 @@
 import { todoApi } from "./api/index.mjs";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { registerAuth } from "./auth.mjs";
+import { EnvironmentDataSchema } from "./environment.mjs";
 
 /**
  * Register all API endpoints with the given OpenAPI registry
@@ -12,6 +13,12 @@ import { registerAuth } from "./auth.mjs";
  *
  */
 export function register(registry: OpenAPIRegistry) {
+  // Register authentication schemes
   registerAuth(registry);
+
+  // Register all apis
   todoApi.forEach((api) => registry.registerApi(api));
+
+  // Register data structures that are not directly used by an API
+  registry.register("EnvironmentData", EnvironmentDataSchema);
 }

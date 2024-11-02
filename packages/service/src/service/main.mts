@@ -1,8 +1,9 @@
+import { environment } from "../environment.mjs";
 import { fastify } from "./fastifyService.mjs";
 
 export async function start() {
   // Start the server
-  fastify.listen({ port: 3000 }, (err: unknown) => {
+  fastify.listen({ port: environment.port, host: environment.host }, (err: unknown) => {
     if (err) {
       console.error(err);
       process.exit(1);

@@ -1,15 +1,13 @@
 import { FastifyRequest, FastifyServerOptions } from "fastify";
-
-const isProduction = process.env.NODE_ENV === "production";
-const logLevel = process.env.LOG_LEVEL ?? (isProduction ? "info" : "debug");
+import { environment } from "../environment.mjs";
 
 // Create a custom Pino configuration
 export const loggerOptions: FastifyServerOptions["logger"] = {
   // Set the log level
-  level: logLevel,
+  level: environment.logLevel,
 
   // Environment-specific options
-  ...(isProduction
+  ...(environment.env === "production"
     ? {}
     : {
         // Use pretty-printing in development

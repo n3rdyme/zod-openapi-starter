@@ -12,6 +12,7 @@ import { fastifyHandlers } from "../service/fastifyHandlers.mjs";
 import { ajvDefaultOptions, createAjv } from "../middleware/ajv-validation.mjs";
 
 import openApiSpec from "@local/api";
+import { environment } from "../environment.mjs";
 
 function createFastify() {
   // Create Fastify instance
@@ -40,7 +41,7 @@ function createFastify() {
   // Register Fastify authentication plugin
   fastify.register(fastifyJwt, {
     // Use environment option 'JWT_SECRET' with an actual secure value in production
-    secret: process.env.JWT_SECRET || "one-string-to-rule-them-all",
+    secret: environment.jwtSecret,
   });
 
   // JWT Sign and Verify Helpers

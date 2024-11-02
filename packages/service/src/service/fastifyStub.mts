@@ -2,6 +2,15 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { InternalServerError, NotImplementedError } from "./errors.mjs";
 import { ApiContext } from "../middleware/requestContext.mjs";
 
+/**
+ * Entrypoint for all fastify handlers, calls the implementation method and sends the response or throws an error
+ *
+ * @param request The fastify request object
+ * @param response The fastify response object
+ * @param impl The implementation method
+ * @param api The api definition object
+ * @returns A fastify handler function that calls the implementation method
+ */
 export const fastifyStub = async (
   request: FastifyRequest,
   response: FastifyReply,

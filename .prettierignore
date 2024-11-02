@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+generated
+
+// speciic files
+packages/service/src/service/fastifyHandlers.mts

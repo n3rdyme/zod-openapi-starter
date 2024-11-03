@@ -1,6 +1,6 @@
 /* <reference types="@fastify/jwt/types/jwt.d.ts" /> */
 import type { ApiContext } from "../../interfaces/apiContext.mjs";
-import { LoginRequest, LoginResponse } from "../../generated/index.mjs";
+import { UserLoginInfo, LoginResponse } from "../../generated/index.mjs";
 import { UnauthorizedError } from "../../service/errors.mjs";
 import { UserToken } from "../../interfaces/userToken.mjs";
 
@@ -10,7 +10,7 @@ const users: UserToken[] = [
   { id: "3", username: "read", timestamp: 0, roles: ["read"] },
 ];
 
-export const login = async ({ username, password }: LoginRequest, context: ApiContext): Promise<LoginResponse> => {
+export const login = async ({ username, password }: UserLoginInfo, context: ApiContext): Promise<LoginResponse> => {
   const user = users.find((user) => user.username === username);
 
   if (user && password === "password") {

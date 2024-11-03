@@ -1,9 +1,9 @@
 import { z } from "zod";
 import type { ApiEndpoint } from "../../generator/index.mjs";
-import { CreateTodoRequestSchema } from "./types/CreateTodoRequestSchema.mjs";
+import { CreateTodoItemSchema } from "./types/CreateTodoItemSchema.mjs";
 import { TodoItemSchema } from "./types/TodoItemSchema.mjs";
 import { TodoItemListSchema } from "./types/TodoItemListSchema.mjs";
-import { UpdateTodoRequestSchema } from "./types/UpdateTodoRequestSchema.mjs";
+import { UpdateTodoItemSchema } from "./types/UpdateTodoItemSchema.mjs";
 
 /**
  * The to-do API endpoints are collected here to be registered with the OpenAPI registry.
@@ -18,7 +18,7 @@ export const todoApi: ApiEndpoint[] = [
     description: "Create a new to-do item",
     method: "post",
     path: "/todos",
-    request: CreateTodoRequestSchema,
+    request: CreateTodoItemSchema,
     response: {
       statusCode: 201,
       schema: TodoItemSchema,
@@ -45,7 +45,7 @@ export const todoApi: ApiEndpoint[] = [
     description: "Update an existing to-do item by ID",
     method: "put",
     path: "/todos/{id}",
-    request: UpdateTodoRequestSchema,
+    request: UpdateTodoItemSchema,
     response: TodoItemSchema,
     roles: ["write"],
   },

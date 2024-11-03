@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const UpdateTodoRequestSchema = z
+export const UpdateTodoItemSchema = z
   .object({
     id: z
       .string()
@@ -12,4 +12,4 @@ export const UpdateTodoRequestSchema = z
     description: z.string().optional(),
     completed: z.boolean().optional(),
   })
-  .openapi("UpdateTodoRequest");
+  .openapi("UpdateTodoItem");

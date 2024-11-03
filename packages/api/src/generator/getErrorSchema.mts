@@ -6,8 +6,11 @@ export const getErrorSchema = () => {
       statusCode: z.number().int().openapi({ format: "int32" }),
       code: z.string().optional(),
       message: z.string().default("Unknown Error"),
-      issues: z.array(z.any()).optional(),
-      data: z.any().optional(),
+      issues: z.array(z.string()).optional(),
+      data: z
+        .map(z.string(), z.string())
+        .optional()
+        .openapi("ErrorDetailsData", { type: "object", additionalProperties: { type: "string" } }),
     })
     .openapi("ErrorDetails");
 

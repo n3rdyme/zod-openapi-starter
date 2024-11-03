@@ -5,3 +5,8 @@ generated
 *.log
 .turbo
 install-state.gz
+.temp
+proto/protoc
+proto/**/*.json
+proto/**/*.proto
+proto/**/*.pb

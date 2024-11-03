@@ -31,7 +31,7 @@ export function registerAuth(registry: OpenAPIRegistry) {
                 username: z.string().min(1).openapi({ example: "admin" }),
                 password: z.string().min(1).openapi({ example: "password" }),
               })
-              .openapi("LoginRequest"),
+              .openapi("UserLoginInfo"),
           },
         },
       },

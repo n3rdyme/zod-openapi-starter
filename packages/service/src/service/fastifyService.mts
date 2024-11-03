@@ -22,7 +22,7 @@ import { fastifyTelemetry } from "./fastifyTelemetry.mjs";
 function createFastify() {
   // Create Fastify instance
   const fastify = Fastify({
-    logger: loggerOptions,
+    ...loggerOptions,
     ajv: { customOptions: { ...ajvDefaultOptions, removeAdditional: false } },
     genReqId: () => nanoid(21),
   });

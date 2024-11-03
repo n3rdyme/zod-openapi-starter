@@ -10,3 +10,4 @@ proto/protoc
 proto/**/*.json
 proto/**/*.proto
 proto/**/*.pb
+packages/**/proto

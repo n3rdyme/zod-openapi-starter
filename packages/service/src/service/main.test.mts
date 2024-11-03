@@ -1,4 +1,4 @@
-import { start, stop } from "./main.mjs";
+import { startFastify, stopFastify } from "./main.mjs";
 import { fastify } from "./fastifyService.mjs";
 
 vi.mock("./fastifyService.mjs", () => ({
@@ -13,12 +13,12 @@ describe("service:main", () => {
     const listen = vi.spyOn(fastify, "listen");
     const close = vi.spyOn(fastify, "close");
 
-    await start();
+    await startFastify();
 
     expect(listen).toHaveBeenCalledOnce();
     expect(listen).toHaveBeenCalledWith(expect.objectContaining({ port: 3000 }), expect.any(Function));
 
-    await stop();
+    await stopFastify();
 
     expect(close).toHaveBeenCalledOnce();
   });

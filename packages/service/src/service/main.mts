@@ -1,7 +1,7 @@
 import { environment } from "../environment.mjs";
 import { fastify } from "./fastifyService.mjs";
 
-export async function start() {
+export async function startFastify() {
   // Start the server
   fastify.listen({ port: environment.port, host: environment.host }, (err: unknown) => {
     if (err) {
@@ -13,12 +13,12 @@ export async function start() {
   });
 
   process.on("SIGINT", async () => {
-    await stop();
+    await stopFastify();
     process.exit(0);
   });
 }
 
-export async function stop() {
+export async function stopFastify() {
   // Stop the server
   fastify.close();
 }

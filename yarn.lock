@@ -774,6 +774,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@local/client-grpc@workspace:packages/client-grpc":
+  version: 0.0.0-use.local
+  resolution: "@local/client-grpc@workspace:packages/client-grpc"
+  dependencies:
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.6.3"
+    vite: "npm:^5.4.10"
+    vitest: "npm:^2.1.3"
+  languageName: unknown
+  linkType: soft
+
 "@local/client-sdk@workspace:packages/client-sdk":
   version: 0.0.0-use.local
   resolution: "@local/client-sdk@workspace:packages/client-sdk"
@@ -797,6 +808,8 @@ __metadata:
     "@fastify/response-validation": "npm:^3.0.1"
     "@fastify/swagger": "npm:^9.2.0"
     "@fastify/swagger-ui": "npm:^5.1.0"
+    "@grpc/grpc-js": "npm:^1.12.2"
+    "@grpc/proto-loader": "npm:^0.7.13"
     "@local/api": "npm:*"
     "@opentelemetry/api": "npm:^1.9.0"
     "@opentelemetry/auto-instrumentations-node": "npm:^0.52.0"

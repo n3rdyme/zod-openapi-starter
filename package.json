@@ -16,7 +16,8 @@
     "format": "prettier --log-level warn --write ./package.json ./packages/**/*.{json,ts,cjs,mjs,mts}",
     "test": "turbo run test",
     "watch": "yarn workspace @local/service watch",
-    "jaeger": "./scripts/jaeger.sh",
+    "docker:start": "cd ./docker && docker compose down && docker compose up",
+    "docker:stop": "cd ./docker && docker compose down",
     "for-each": "turbo run --concurrency 1 for-each --"
   },
   "devDependencies": {

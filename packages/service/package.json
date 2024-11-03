@@ -12,7 +12,7 @@
     "test:coverage": "vitest run --coverage",
     "start": "node ./dist/index.mjs",
     "watch": "NODE_NO_WARNINGS=1 node --watch --loader ts-node/esm ./src/index.mts",
-    "trace": "NODE_NO_WARNINGS=1 node --watch --loader ts-node/esm --import ./src/otlp-trace.mjs ./src/index.mts",
+    "trace": "NODE_NO_WARNINGS=1 OTEL_SERVICE_NAME=local-service node --watch --loader ts-node/esm --import ./src/otlp-trace.mjs ./src/index.mts",
     "for-each": "yarn"
   },
   "dependencies": {

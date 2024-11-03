@@ -14,7 +14,7 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
 import { NodeSDK, metrics } from "@opentelemetry/sdk-node";
 
-process.env.OTEL_SERVICE_NAME = "local-service";
+process.env.OTEL_SERVICE_NAME = process.env.OTEL_SERVICE_NAME || "local-service";
 
 const sdk = new NodeSDK({
   instrumentations: [new HttpInstrumentation(), new FastifyInstrumentation()],

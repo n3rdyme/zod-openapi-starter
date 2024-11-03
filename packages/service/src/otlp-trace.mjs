@@ -29,3 +29,5 @@ process.on("beforeExit", async () => {
 });
 
 sdk.start();
+
+console.log("Jaeger portal: http://localhost:16686");

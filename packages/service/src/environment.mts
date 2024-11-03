@@ -18,7 +18,7 @@ function loadEnvironmentData(): EnvironmentData {
     envData.host = "localhost";
     envData.jwtSecret = "Ash stnazg durbatulûk, ash nazg gimbatul";
   }
-  console.log("OTEL_SERVICE_NAME", process.env.OTEL_SERVICE_NAME);
+
   if (process.env.OTEL_SERVICE_NAME) {
     envData.openTelemetry = true;
   }

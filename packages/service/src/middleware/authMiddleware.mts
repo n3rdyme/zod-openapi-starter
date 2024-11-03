@@ -5,17 +5,22 @@ import { UserToken } from "../interfaces/userToken.mjs";
 export async function authMiddleware(request: FastifyRequest, response: FastifyReply): Promise<void> {
   const userRoles: string[] = [];
   try {
+    if (!request.apiContext) {
+      throw new Error("API Context not initialized");
+    }
+
     const token: UserToken = await request.jwtVerify();
     request.log.debug(token, "Token verified");
     userRoles.push(...(token.roles ?? []));
 
-    if (!request.apiContext) {
-      throw new Error("API Context not initialized");
+    if (!token.id || !token.username || !token.roles) {
+      throw new UnauthorizedError("Token missing required fields");
     }
+
     request.apiContext.user = token;
   } catch (error) {
     response.log.error(error, "JWT Verify Error");
-    throw new UnauthorizedError("Invalid token");
+    throw new UnauthorizedError("Invalid token", { cause: error });
   }
 
   const schema = request.routeOptions.schema as unknown as { "x-roles"?: string[] };

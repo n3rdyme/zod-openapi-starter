@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const EnvironmentDataSchema = z
   .object({
-    env: z.enum(["production", "development"]),
+    env: z.enum(["production", "development", "test"]),
     logLevel: z.enum(["debug", "info", "warn", "error"]),
     port: z.number(),
     host: z.string().optional(),

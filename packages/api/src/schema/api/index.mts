@@ -58,9 +58,12 @@ export const todoApi: ApiEndpoint[] = [
     method: "delete",
     path: "/todos/{id}",
     request: z.object({
-      id: z.string().uuid().openapi({
-        description: "The ID of the to-do item to remove",
-      }),
+      id: z
+        .string()
+        .regex(/^[\w-]{16,32}$/)
+        .openapi({
+          description: "The ID of the to-do item to remove",
+        }),
     }),
     response: 204,
     roles: ["admin"],

@@ -23,7 +23,7 @@ function createFastify() {
   // Create Fastify instance
   const fastify = Fastify({
     ...loggerOptions,
-    ajv: { customOptions: { ...ajvDefaultOptions, removeAdditional: false } },
+    ajv: { customOptions: { ...ajvDefaultOptions } },
     genReqId: () => nanoid(21),
   });
 
@@ -37,6 +37,7 @@ function createFastify() {
       response,
       logger: response.log,
       user: {
+        id: "",
         username: "",
         timestamp: 0,
         roles: [],

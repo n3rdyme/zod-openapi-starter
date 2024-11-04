@@ -758,6 +758,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@local/client-sdk@workspace:packages/client-sdk"
   dependencies:
+    "@local/api": "npm:*"
     typescript: "npm:^5.6.3"
     vite: "npm:^5.4.10"
     vitest: "npm:^2.1.3"
@@ -5919,33 +5920,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monorepo-root@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "monorepo-root@workspace:."
-  dependencies:
-    "@eslint/compat": "npm:^1.2.1"
-    "@eslint/eslintrc": "npm:^3.1.0"
-    "@eslint/js": "npm:^9.13.0"
-    "@eslint/migrate-config": "npm:1.3.2"
-    "@types/eslint": "npm:^9.6.1"
-    "@types/node": "npm:^22.7.9"
-    "@typescript-eslint/eslint-plugin": "npm:^8.11.0"
-    "@typescript-eslint/parser": "npm:^8.11.0"
-    "@vitest/coverage-v8": "npm:2.1.3"
-    eslint: "npm:^9.13.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import: "npm:^2.31.0"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    prettier: "npm:^3.3.3"
-    turbo: "npm:^2.2.3"
-    typescript: "npm:^5.6.3"
-    vite: "npm:^5.4.10"
-    vitest: "npm:^2.1.3"
-    yarn: "npm:^1.22.22"
-  languageName: unknown
-  linkType: soft
-
 "ms@npm:^2.1.1, ms@npm:^2.1.3":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
@@ -8253,6 +8227,33 @@ __metadata:
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
   languageName: node
   linkType: hard
+
+"zod-openapi-starter@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "zod-openapi-starter@workspace:."
+  dependencies:
+    "@eslint/compat": "npm:^1.2.1"
+    "@eslint/eslintrc": "npm:^3.1.0"
+    "@eslint/js": "npm:^9.13.0"
+    "@eslint/migrate-config": "npm:1.3.2"
+    "@types/eslint": "npm:^9.6.1"
+    "@types/node": "npm:^22.7.9"
+    "@typescript-eslint/eslint-plugin": "npm:^8.11.0"
+    "@typescript-eslint/parser": "npm:^8.11.0"
+    "@vitest/coverage-v8": "npm:2.1.3"
+    eslint: "npm:^9.13.0"
+    eslint-config-prettier: "npm:^9.1.0"
+    eslint-import-resolver-typescript: "npm:^3.6.3"
+    eslint-plugin-import: "npm:^2.31.0"
+    eslint-plugin-prettier: "npm:^5.2.1"
+    prettier: "npm:^3.3.3"
+    turbo: "npm:^2.2.3"
+    typescript: "npm:^5.6.3"
+    vite: "npm:^5.4.10"
+    vitest: "npm:^2.1.3"
+    yarn: "npm:^1.22.22"
+  languageName: unknown
+  linkType: soft
 
 "zod@npm:^3.23.8":
   version: 3.23.8

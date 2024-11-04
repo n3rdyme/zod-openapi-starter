@@ -9,10 +9,15 @@ set -e
 # Change to the directory where the script is located
 cd "$(dirname "$0")"
 
-mkdir -p ./google
+# Ensure that the user's go/bin directory is in the PATH
+if [[ ":$PATH:" != *":~/go/bin:"* ]]; then
+  export PATH=$PATH:~/go/bin  
+fi
 
 # Install the protoc compiler and google protos
 ./install.sh
+
+mkdir -p ./google
 
 # Import "google/api/annotations.proto";
 # https://github.com/googleapis/googleapis/raw/refs/heads/master/google/api/annotations.proto

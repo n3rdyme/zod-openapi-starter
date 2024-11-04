@@ -2,6 +2,29 @@
 
 A simple declarative-first Node.js starter project utilizing TypeScript, Fastify, and OpenAPI for scalable and reliable API development.
 
+## Getting Started
+
+To set up and run the service:
+
+1. **Install dependencies**:
+
+   ```bash
+   yarn install
+   ```
+
+2. **Build, lint, and test the package**:
+
+   ```bash
+   yarn all
+   ```
+
+3. **Run the service**:
+   ```bash
+   yarn watch
+   ```
+
+---
+
 ## API Definition with `zod-to-openapi`
 
 The API schema definitions for this project are located in `packages/api/src/schema/**`. We use `@asteasolutions/zod-to-openapi` to define and validate APIs. This approach leverages Zod schemas to not only validate but also generate OpenAPI specifications directly from the schema definitions, streamlining the process and ensuring consistency between validation logic and API documentation. A lightweight wrapper has been added to the `registry` object, `registerApi` which makes it clean and simple to register an api.

@@ -778,6 +778,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@local/client-grpc@workspace:packages/client-grpc"
   dependencies:
+    "@local/api": "npm:*"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.6.3"
     vite: "npm:^5.4.10"

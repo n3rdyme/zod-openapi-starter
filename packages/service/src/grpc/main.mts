@@ -2,6 +2,7 @@
 import { Server, ServerCredentials } from "@grpc/grpc-js";
 import { environment } from "../environment.mjs";
 import { protoLoader } from "./protoLoader.mjs";
+import { grpcCallStub, TCall } from "./grpcCallStub.mjs";
 
 let server: Server | undefined;
 
@@ -14,13 +15,20 @@ export async function startGrpc() {
 
   server = new Server({});
 
+  // Create Lookup for Service Methods
+  const lookup: { [key: string]: any } = {};
+  Object.values(MyService.service).forEach((value: any) => {
+    lookup[value.originalName] = value.requestType?.type;
+  });
+
   server.addService(MyService.service, {
-    login: (call: any, callback: any) => {
-      callback(null, { token: "token-data" });
-    },
-    yourMethod: (call: any, callback: any) => {
-      callback(null, {});
-    },
+    ...Object.entries(lookup).reduce(
+      (acc, [name, type]) => {
+        acc[name] = (call, callback) => grpcCallStub(MyService, name, type, call, callback as any);
+        return acc;
+      },
+      {} as { [key: string]: TCall },
+    ),
   });
 
   server.bindAsync(

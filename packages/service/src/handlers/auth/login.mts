@@ -3,6 +3,7 @@ import type { ApiContext } from "../../interfaces/apiContext.mjs";
 import { UserLoginInfo, LoginResponse } from "../../generated/index.mjs";
 import { UnauthorizedError } from "../../service/errors.mjs";
 import { UserToken } from "../../interfaces/userToken.mjs";
+import { fastify } from "../../service/fastifyService.mjs";
 
 const users: UserToken[] = [
   { id: "1", username: "admin", timestamp: 0, roles: ["admin", "read", "write"] },
@@ -20,7 +21,7 @@ export const login = async ({ username, password }: UserLoginInfo, context: ApiC
       roles: Object.freeze([...user.roles]),
     });
 
-    const token = context.response.server.jwt.sign(tokenData, { expiresIn: "24h" });
+    const token = fastify.jwt.sign(tokenData, { expiresIn: "24h" });
     return { token };
   }
 

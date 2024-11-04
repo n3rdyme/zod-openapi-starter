@@ -19,6 +19,7 @@ import { environment } from "../environment.mjs";
 import { ErrorDetails } from "../generated/errorDetails.mjs";
 import { fastifyTelemetry } from "./fastifyTelemetry.mjs";
 import { fastifyGraphql } from "./fastifyGraphql.mjs";
+import { newApiContext } from "../interfaces/apiContext.mjs";
 
 function createFastify() {
   // Create Fastify instance
@@ -34,20 +35,7 @@ function createFastify() {
 
   // **************************************************************** onRequest
   fastify.addHook("onRequest", async (request, response) => {
-    request.apiContext = {
-      name: `${request.method} ${request.url}`,
-      statusCode: 200,
-      contentType: "application/json",
-      request,
-      response,
-      logger: response.log,
-      user: {
-        id: "",
-        username: "",
-        timestamp: 0,
-        roles: [],
-      },
-    };
+    request.apiContext = newApiContext(request, response);
   });
 
   // **************************************************************** @fastify/jwt

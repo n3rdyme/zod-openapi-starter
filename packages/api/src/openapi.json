@@ -3,7 +3,9 @@
   "info": {
     "version": "1.0.0",
     "title": "ToDo API",
-    "description": "This is the API"
+    "description": "This is the API",
+    "x-service-name": "TodoListService",
+    "x-package-name": "todo"
   },
   "servers": [{ "url": "/" }],
   "paths": [

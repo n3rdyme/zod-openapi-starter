@@ -18,6 +18,9 @@ const compat = new FlatCompat({
 
 export default [
   {
+    env: {
+      node: true,
+    },
     ignores: ["**/dist", "**/node_modules", "**/generated", "**/*.d.ts"],
   },
   ...fixupConfigRules(

@@ -39,6 +39,9 @@ mkdir -p $PACKAGE_DIR
 PACKAGE_PATH="./$GRPC_SERVICE_NAME/$GRPC_SERVICE_NAME"
 cp ../packages/api/dist/openapi.json $PACKAGE_PATH.json
 
+# Before we convert to proto, update the openapi.json for better compatibility
+node ./gnosticPrepare.mjs $PACKAGE_PATH.json
+
 # Convert openapi.json to .pb file
 gnostic --pb-out=$PACKAGE_PATH.pb $PACKAGE_PATH.json
 
@@ -47,6 +50,9 @@ if [ -f $PACKAGE_PATH.proto ]; then
   rm $PACKAGE_PATH.proto
 fi
 gnostic-grpc -input $PACKAGE_PATH.pb -output $PACKAGE_DIR
+
+# Gnostic is terrible, so we need to fix the .proto file
+node ./gnosticRepair.mjs $PACKAGE_PATH.json $PACKAGE_PATH.proto
 
 # Build the .proto file with protoc to validate the proto file
 ./protoc -I=. --descriptor_set_out=$PACKAGE_DIR/$GRPC_SERVICE_NAME.pb --include_imports $PACKAGE_PATH.proto

@@ -60,6 +60,7 @@ function fastifyResponseValidationFn(
   }
 
   function onRoute(routeOpts: any) {
+    if (!routeOpts.schema) return;
     if (routeOpts.responseValidation === false) return;
     if (routeOpts.schema && routeOpts.schema.response) {
       const responseStatusCodeValidation =
@@ -72,8 +73,15 @@ function fastifyResponseValidationFn(
   function buildHook(schema: any, responseStatusCodeValidation: any) {
     const statusCodes: any = {};
     for (const originalCode in schema) {
-      const statusCode = originalCode.toUpperCase(); // Ensure status code is uppercase for 4xx and 5xx, etc.
-      const responseSchema = schema[statusCode];
+      /**
+       * Internally we are going to treat status codes as lower-case strings to preserve compatibility
+       * with previous versions of this plugin allowing 4xx/5xx status codes to be defined as strings
+       * even though the OpenAPI spec requires them to be upper-case or the word 'default'.
+       * @see {@link https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#responses-object}
+       * @see {@link https://swagger.io/specification/#fixed-fields-14}
+       */
+      const statusCode = originalCode.toLowerCase();
+      const responseSchema = schema[originalCode];
 
       if (responseSchema.content !== undefined) {
         statusCodes[statusCode] = {};
@@ -89,7 +97,7 @@ function fastifyResponseValidationFn(
 
     function preSerialization(req: any, reply: any, payload: any, next: any) {
       let validate =
-        statusCodes[reply.statusCode] || statusCodes[(reply.statusCode + "")[0] + "XX"] || statusCodes.DEFAULT;
+        statusCodes[reply.statusCode] || statusCodes[(reply.statusCode + "")[0] + "xx"] || statusCodes.default;
 
       if (responseStatusCodeValidation && validate === undefined) {
         next(new NoSchemaDefinedError(`status code ${reply.statusCode}`));

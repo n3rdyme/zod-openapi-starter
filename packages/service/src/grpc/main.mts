@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Server, ServerCredentials } from "@grpc/grpc-js";
 import { environment } from "../environment.mjs";
 import { protoLoader } from "./protoLoader.mjs";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { sendUnaryData, ServiceError, Metadata, status, ServerUnaryCall } from "@grpc/grpc-js";
 import { FastifyBaseLogger } from "fastify";
 import { HttpHeader } from "fastify/types/utils";
@@ -36,8 +37,6 @@ export class GrpcResponse {
       details: "The status code was not 2xx",
       metadata: this.metadata,
     };
-
-    const f = new UnknownError("Internal Server Error", { cause: reportError });
 
     let error = reportError as unknown as {
       grpcCode: number;

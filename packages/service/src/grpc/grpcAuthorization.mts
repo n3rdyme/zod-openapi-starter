@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GrpcEventArgs } from "./grpcServerStub.mjs";
 import { authMiddleware } from "../middleware/authMiddleware.mjs";
 import { NotImplementedError } from "../service/errors.mjs";

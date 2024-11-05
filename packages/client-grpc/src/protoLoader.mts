@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as grpc from "@grpc/grpc-js";
 import * as loader from "@grpc/proto-loader";
-import type { OpenAPIV3 } from "openapi-types";
 import { TodoListService } from "./generated/example/todo/TodoListService.js";
 
 import path from "path";
@@ -32,7 +31,7 @@ export async function protoLoader(): Promise<ServiceClientCtor> {
   });
 
   // Get the package and service definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition);
   // navigate to the service definition by the path from protoDescriptor
   const svcPath = `${serviceSpec.info["x-package-name"]}.${serviceSpec.info["x-service-name"]}`.split(".");

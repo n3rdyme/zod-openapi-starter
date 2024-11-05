@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type sendUnaryData, type ServerUnaryCall, type ServiceDefinition } from "@grpc/grpc-js";
 import type { OpenAPIV3 } from "openapi-types";
 import { GrpcResponse } from "./grpcResponse.mjs";
@@ -44,6 +45,7 @@ export class GrpcServerStub {
     [key: string]: GrpcServerOperation;
   } = {};
   private readonly ajv: Ajv;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   private $loadedFunctions: { [key: string]: Function | { error: any } } = {};
   private $dispatchHandler: { [key: string]: (request: ApiRequest, context: ApiContext) => Promise<unknown> };
 

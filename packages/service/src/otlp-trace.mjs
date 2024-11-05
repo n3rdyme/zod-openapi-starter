@@ -2,7 +2,6 @@
  * Taken from https://github.com/open-telemetry/opentelemetry-js-contrib/blob/main/examples/fastify/opentelemetry.js
  */
 
-/* eslint-disable no-undef */
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
 
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);

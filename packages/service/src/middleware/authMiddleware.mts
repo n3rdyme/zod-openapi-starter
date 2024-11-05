@@ -1,4 +1,3 @@
-import { FastifyRequest, FastifyReply } from "fastify";
 import { ForbiddenError, UnauthorizedError } from "../service/errors.mjs";
 import { UserToken } from "../interfaces/userToken.mjs";
 import { ApiRequest, ApiResponse } from "../interfaces/apiContext.mjs";

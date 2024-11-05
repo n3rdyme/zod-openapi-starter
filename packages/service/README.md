@@ -16,7 +16,9 @@ service/
     ├── otlp-trace.mjs
     ├── environment.mts
     ├── generated/
-    │   └── various generated files
+    │   └── generated types and files
+    ├── grpc/
+    │   └── core grpc service logic
     ├── service/
     │   └── core Fastify setup and service logic
     ├── handlers/
@@ -66,10 +68,21 @@ This directory includes core logic related to setting up and managing the Fastif
 - **`fastifyService.mts`**: Configures the Fastify server, adding middleware and plugins.
 - **`errors.mts`**: Centralizes error definitions for consistent error handling across the service.
 
+#### `grpc/`
+
+This directory includes core logic related to setting up and managing the gRPC server:
+
+- **`grpcServerStub.mts`**: Defines the core gRPC server, connecting services defined in `.proto` files to their implementations.
+- **`grpcAuthorization.mts`**: Middleware for gRPC authorization, handling token verification and enforcing access controls.
+- **`grpcResponse.mts`**: Utilities for consistent response handling in gRPC calls.
+- **`main.mts`**: Initializes and starts the gRPC server.
+- **`protoLoader.mts`**: Loads `.proto` files using `@grpc/proto-loader` for compatibility with `@grpc/grpc-js`.
+
 #### `handlers/`
 
 Defines specific request handlers for different parts of the service, organized by resource:
 
+- **`index.mts`**: (generated file) Exposes a getHandlers function to build a server stub with by operationId.
 - **`todos/`**: Handles CRUD operations for todo items.
   - **`updateTodo.mts`**: Updates a todo item.
   - **`createTodo.mts`**: Creates a new todo item.
@@ -131,5 +144,7 @@ This will install dependencies, compile the TypeScript files, and start the serv
 
 ## Additional Documentation
 
-- **Fastify**: [https://www.fastify.io/](https://www.fastify.io/)
-- **OpenTelemetry**: [https://opentelemetry.io/](https://opentelemetry.io/)
+- **Fastify**: https://www.fastify.io/
+- **OpenTelemetry**: https://opentelemetry.io/
+- **@grpc/grpc-js**: https://www.npmjs.com/package/@grpc/grpc-js
+- **@grpc/proto-loader**: https://www.npmjs.com/package/@grpc/proto-loader

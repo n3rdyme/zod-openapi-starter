@@ -11,7 +11,6 @@ export async function authMiddleware(request: ApiRequest, response: ApiResponse)
     }
 
     const token: UserToken = await request.jwtVerify();
-    request.log.debug(token, "Token verified");
     userRoles.push(...(token?.roles ?? []));
 
     if (!token?.id || !token.username || !token.roles) {
@@ -33,6 +32,6 @@ export async function authMiddleware(request: ApiRequest, response: ApiResponse)
   }
 
   if (roles) {
-    response.log.debug({ roles }, "User has required roles");
+    response.log.debug({ userId: request.apiContext.user.id, roles }, "User has required roles");
   }
 }

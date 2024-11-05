@@ -2,7 +2,8 @@
 import { Server, ServerCredentials } from "@grpc/grpc-js";
 import { environment } from "../environment.mjs";
 import { protoLoader } from "./protoLoader.mjs";
-import { grpcCallStub, TCall } from "./grpcCallStub.mjs";
+import { GrpcServerStub } from "./grpcServerStub.mjs";
+import { grpcAuthorization } from "./grpcAuthorization.mjs";
 
 let server: Server | undefined;
 
@@ -11,25 +12,18 @@ export async function startGrpc() {
     throw new Error("Server already started");
   }
 
-  const MyService = protoLoader();
+  const MyService = await protoLoader();
 
   server = new Server({});
 
-  // Create Lookup for Service Methods
-  const lookup: { [key: string]: any } = {};
-  Object.values(MyService.service).forEach((value: any) => {
-    lookup[value.originalName] = value.requestType?.type;
-  });
+  const service = new GrpcServerStub(MyService.service, MyService.spec);
 
-  server.addService(MyService.service, {
-    ...Object.entries(lookup).reduce(
-      (acc, [name, type]) => {
-        acc[name] = (call, callback) => grpcCallStub(MyService, name, type, call, callback as any);
-        return acc;
-      },
-      {} as { [key: string]: TCall },
-    ),
-  });
+  service.onBeforeCall = (args) => {
+    args.context.logger.info(`GRPC call: ${args.name}`);
+    return grpcAuthorization(args);
+  };
+
+  server.addService(MyService.service, service.stubs);
 
   server.bindAsync(
     `${environment.host ?? "localhost"}:${environment.port + 1}`,

@@ -39,7 +39,7 @@ if ! command -v gnostic > /dev/null 2>&1; then
   go install github.com/google/gnostic@latest
 fi
 if ! command -v gnostic-grpc > /dev/null 2>&1; then
-  go install github.com/google/gnostic-grpc@latest
+  go install github.com/googleapis/gnostic-grpc@latest
 fi
 
 # Install the protoc compiler (local copy)

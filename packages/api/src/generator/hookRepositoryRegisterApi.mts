@@ -23,23 +23,17 @@ type ApiEndpointResponseNoContent = Omit<ApiEndpointResponseContent, "statusCode
 };
 type ApiEndpointResponse = ApiEndpointResponseContent | ApiEndpointResponseNoContent;
 
-interface ApiEndpointFull {
+export interface ApiEndpoint {
   name: string;
   description?: string;
   tags?: string[];
-  method: Exclude<RouteConfig["method"], "get">;
+  method: RouteConfig["method"];
   path: string;
   request?: RouteParameter | ApiEndpointRequest;
   query?: RouteParameter;
   response?: 204 | ZodTypeAny | ApiEndpointResponse;
   roles?: string[];
 }
-
-interface ApiEndpointGet extends Omit<ApiEndpointFull, "method" | "request"> {
-  method: "get";
-}
-
-export type ApiEndpoint = ApiEndpointFull | ApiEndpointGet;
 
 declare module "@asteasolutions/zod-to-openapi" {
   interface OpenAPIRegistry {
@@ -53,9 +47,7 @@ function repositoryRegisterApi(this: OpenAPIRegistry, api: ApiEndpoint) {
     description: requestDesc,
     contentType: requestType,
   } = (
-    ((api as ApiEndpointFull).request as ZodTypeAny)?.constructor?.name?.startsWith?.("Zod")
-      ? { schema: (api as ApiEndpointFull).request }
-      : ((api as ApiEndpointFull).request ?? {})
+    (api.request as ZodTypeAny)?.constructor?.name?.startsWith?.("Zod") ? { schema: api.request } : (api.request ?? {})
   ) as ApiEndpointRequest;
 
   let requestSchema: ZodObject<any> | undefined = requestSchemaFull as ZodObject<any>;

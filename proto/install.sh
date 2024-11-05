@@ -59,7 +59,7 @@ if [ ! -f ./protoc ]; then
   # rm $PROTOC_ZIP
 
   mv ./.temp/bin/protoc ./protoc
-  cp -r ./.temp/include/google/* ./google/
+  cp -r ./.temp/include/google .
 
   # Remove the temporary directory
   rm -rf ./.temp

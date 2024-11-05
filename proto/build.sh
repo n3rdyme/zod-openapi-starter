@@ -58,7 +58,6 @@ node ./gnosticRepair.mjs $PACKAGE_PATH.json $PACKAGE_PATH.proto
 # Build the .proto file with protoc to validate the proto file
 ./protoc -I=. --descriptor_set_out=$PACKAGE_DIR/$GRPC_SERVICE_NAME.pb --include_imports $PACKAGE_PATH.proto
 
-rm -r ../packages/client-grpc/src/generated
 mkdir -p ../packages/client-grpc/src/generated
 ./protoc \
   -I=. \

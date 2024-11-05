@@ -208,13 +208,13 @@ function generateGetHandlers(getHandlersFile) {
       `  contentType: string,`,
       `) => T;`,
       ``,
-      `export const getHandlers = <T extends Function>(factory: ServerStubFactory<T>): { [key: string]:T } => ({`,
+      `export const getHandlers = <T extends Function>(factory: ServerStubFactory<T>): { [key: string]: T } => ({`,
       ...Object.entries(operations).map(([name, value]) => {
         const success = value.response?.types?.success?.length !== 1 ? null : value.response.types.success[0];
         const successCode = success?.key ?? "200";
         const contentType = success?.contentType ?? "application/json";
         const pthName = value?.tags?.[0] ? `${value?.tags?.[0]}/${name}` : name;
-        return `  ${name}: factory("${name}", ()=> import("./${pthName}.mjs"), "${successCode}", "${contentType}"),`;
+        return `  ${name}: factory("${name}", () => import("./${pthName}.mjs"), "${successCode}", "${contentType}"),`;
       }),
       `});`,
       ``,

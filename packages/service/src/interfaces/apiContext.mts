@@ -3,9 +3,9 @@ import { UserToken } from "./userToken.mjs";
 
 export type ApiRequest = Pick<
   FastifyRequest,
-  "method" | "url" | "headers" | "body" | "params" | "query" | "log" | "apiContext"
+  "method" | "url" | "routeOptions" | "headers" | "body" | "params" | "query" | "log" | "jwtVerify" | "apiContext"
 >;
-export type ApiResponse = Pick<FastifyReply, "headers" | "send" | "status" | "log">;
+export type ApiResponse = Pick<FastifyReply, "header" | "send" | "status" | "log">;
 
 export interface ApiContext {
   name: string;

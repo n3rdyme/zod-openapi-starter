@@ -6,10 +6,12 @@
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",
   "scripts": {
-    "build": "yarn build:code && yarn build:openapi && yarn build:orval",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -rf coverage",
+    "build": "yarn build:code && yarn build:openapi && yarn build:orval && yarn build:proto",
     "build:code": "tsc",
     "build:openapi": "node ./dist/generator/generate.mjs ./dist/openapi.json",
     "build:orval": "NODE_NO_WARNINGS=1 orval orval.config.js",
+    "build:proto": "../../proto/build.sh",
     "lint": "eslint --fix --max-warnings=0 ./src",
     "for-each": "yarn"
   },

@@ -8,7 +8,6 @@ const fs = require("fs");
 const operations = {};
 
 const serviceOutput = "../service/src/generated";
-const grpcClientOutput = "../client-grpc/src/generated";
 const clientOutput = "../client-sdk/src/generated";
 
 module.exports = defineConfig({
@@ -31,62 +30,6 @@ module.exports = defineConfig({
     hooks: {
       afterAllFilesWrite: () => {
         fixAllImportExtensions(clientOutput);
-      },
-    },
-    input: {
-      target: "./dist/openapi.json",
-      parserOptions: {
-        validate: false,
-      },
-    },
-  },
-  grpcClient: {
-    output: {
-      mode: "single",
-      target: grpcClientOutput + "/client.mts",
-      schemas: grpcClientOutput + "/types/",
-      client: "fetch",
-      fileExtension: ".mts",
-      mock: false,
-      prettier: false,
-      override: {
-        transformer: (arg) => {
-          operations[arg.operationId] = arg;
-          return arg;
-        },
-      },
-    },
-    hooks: {
-      afterAllFilesWrite: () => {
-        fixAllImportExtensions(grpcClientOutput);
-        const client = grpcClientOutput + "/client.mts";
-        fs.writeFileSync(
-          client,
-          [
-            `import * as types from "./types/index.mjs";`,
-            `export * from './types/index.mjs';`,
-            "",
-            `export type ClientCalls = {`,
-            ...Object.entries(operations).map(([name, value]) => {
-              const success = value.response?.types?.success?.length !== 1 ? null : value.response.types.success[0];
-              const reqType = !value.props?.length
-                ? "unknown"
-                : value.props
-                    .map((p) => {
-                      if (p.type === "body" || p.type === "queryParam") {
-                        return "types." + p.implementation.substring(p.implementation.indexOf(":") + 1).trim();
-                      }
-                      return `{ ${p.definition} }`;
-                    })
-                    .join(" & ");
-              return `  ${name}: (request: ${reqType}) => Promise<${success.imports?.[0]?.name ? `types.${success.imports?.[0]?.name}` : (success.value ?? "void")}>;`;
-            }),
-            `};`,
-            ``,
-            // ...[`/*`, JSON.stringify(Object.values(operations)[0], null, 2), `*/`, ``],
-          ].join("\n"),
-          "utf-8",
-        );
       },
     },
     input: {

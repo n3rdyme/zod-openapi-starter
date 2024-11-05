@@ -1,5 +1,15 @@
+/**
+ * PURPOSE: This script takes an OpenAPI spec and prepares it for gnostic to generate gRPC services.
+ *
+ * GRPC is comprised of single-request, single-response operations and (rightly) does not separate
+ * things like path and query parameters. This script rewrites the OpenAPI spec to create a new
+ * operation for each path and method combination, with a single request body schema that combines
+ * all path and query parameters. The original path is preserved in the x-original-path extension.
+ *
+ * This tool also prunes unused schemas in components/schemas to avoid unnecessary declarations.
+ *
+ */
 import fs from "fs-extra";
-import path from "path";
 
 const pascalCase = (str) => {
   return str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, "").toUpperCase());
@@ -70,7 +80,10 @@ const rewriteOpenAPISpec = (spec) => {
           if (param.in === "path" || param.in === "query") {
             const schemaRef = param.schema?.$ref || param.schema;
             if (schemaRef) {
-              combinedSchema.properties[param.name] = dereferenceSchema(schemaRef, spec);
+              combinedSchema.properties = {
+                [param.name]: dereferenceSchema(schemaRef, spec),
+                ...combinedSchema.properties,
+              };
               if (param.in === "path") {
                 combinedSchema.required = combinedSchema.required || [];
                 combinedSchema.required.push(param.name);

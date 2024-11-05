@@ -10,6 +10,7 @@
   },
   "scripts": {
     "all": "yarn build && yarn format && yarn lint && yarn test",
+    "clean": "turbo run clean && rm -rf ./.turbo",
     "preinstall": "echo $npm_execpath | grep -q yarn || (echo 'Please use yarn instead of npm, to install run:\nnpm i -g yarn\n' && exit 1)",
     "prebuild": "go version >/dev/null || (echo 'Please install Go, to install visit:\nhttps://golang.org/doc/install\n' && exit 1)",
     "build": "yarn prebuild && turbo run build",
@@ -39,6 +40,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
+    "ts-proto": "^2.2.5",
     "turbo": "^2.2.3",
     "typescript": "^5.6.3",
     "vite": "^5.4.10",

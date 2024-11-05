@@ -5,7 +5,7 @@
     "title": "ToDo API",
     "description": "This is the API",
     "x-service-name": "TodoListService",
-    "x-package-name": "todo"
+    "x-package-name": "example.todo"
   },
   "servers": [{ "url": "/" }],
   "paths": [

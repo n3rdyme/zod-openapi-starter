@@ -2,7 +2,6 @@
 
 GRPC_SERVICE_NAME=openapiService
 
-
 # Exit immediately if a command exits with a non-zero status
 set -e
 
@@ -17,7 +16,9 @@ fi
 # Install the protoc compiler and google protos
 ./install.sh
 
-mkdir -p ./google
+# Read the x-service-name from the packages/api/dist/openapi.json file
+export GRPC_SERVICE_NAME=$(node -e "console.log(require('../packages/api/dist/openapi.json').info['x-service-name']);");
+export GRPC_PACKAGE_PATH=$(node -e "console.log(require('../packages/api/dist/openapi.json').info['x-package-name'].replace('.', '/'));");
 
 # Import "google/api/annotations.proto";
 # https://github.com/googleapis/googleapis/raw/refs/heads/master/google/api/annotations.proto
@@ -34,9 +35,9 @@ if [ ! -f ./google/api/http.proto ]; then
 fi
 
 # Build the Descriptor as a binary .pb file
-PACKAGE_DIR="./$GRPC_SERVICE_NAME"
+PACKAGE_DIR="./$GRPC_PACKAGE_PATH"
 mkdir -p $PACKAGE_DIR
-PACKAGE_PATH="./$GRPC_SERVICE_NAME/$GRPC_SERVICE_NAME"
+PACKAGE_PATH="./$GRPC_PACKAGE_PATH/$GRPC_SERVICE_NAME"
 cp ../packages/api/dist/openapi.json $PACKAGE_PATH.json
 
 # Before we convert to proto, update the openapi.json for better compatibility
@@ -57,14 +58,33 @@ node ./gnosticRepair.mjs $PACKAGE_PATH.json $PACKAGE_PATH.proto
 # Build the .proto file with protoc to validate the proto file
 ./protoc -I=. --descriptor_set_out=$PACKAGE_DIR/$GRPC_SERVICE_NAME.pb --include_imports $PACKAGE_PATH.proto
 
+rm -r ../packages/client-grpc/src/generated
+mkdir -p ../packages/client-grpc/src/generated
+./protoc \
+  -I=. \
+  --plugin=protoc-gen-ts_proto=../node_modules/.bin/protoc-gen-ts_proto \
+  --ts_proto_out=../packages/client-grpc/src/generated \
+  --ts_proto_opt=env=node \
+  --ts_proto_opt=onlyTypes=true \
+  --ts_proto_opt=useOptionals=messages \
+  --ts_proto_opt=stringEnums=true \
+  --ts_proto_opt=lowerCaseServiceMethods=true \
+  --ts_proto_opt=snakeToCamel=true \
+  --ts_proto_opt=outputPartialMethods=true \
+  $PACKAGE_PATH.proto
+
+cp $PACKAGE_PATH.json ../packages/service/src/grpc/serviceSpec.json
+
+# --ts_proto_opt=context=true \
+  
 # Copy the .proto file to the client-grpc/proto directory
 mkdir -p ../packages/client-grpc/src/proto/google
 cp -r ./google/* ../packages/client-grpc/src/proto/google
 mkdir -p ../packages/client-grpc/src/proto/$GRPC_SERVICE_NAME
-cp -r ./$GRPC_SERVICE_NAME/*.proto ../packages/client-grpc/src/proto/$GRPC_SERVICE_NAME
+cp -r $PACKAGE_DIR/*.proto ../packages/client-grpc/src/proto/$GRPC_SERVICE_NAME
 
 # Copy the .proto file to the service/src/proto directory
 mkdir -p ../packages/service/src/proto/google
 cp -r ./google/* ../packages/service/src/proto/google
 mkdir -p ../packages/service/src/proto/$GRPC_SERVICE_NAME
-cp -r ./$GRPC_SERVICE_NAME/*.proto ../packages/service/src/proto/$GRPC_SERVICE_NAME
+cp -r $PACKAGE_DIR/*.proto ../packages/service/src/proto/$GRPC_SERVICE_NAME

@@ -1,9 +1,19 @@
+/**
+ * PURPOSE: Repair a gnostic-generated proto file by removing unused fields and adding missing fields.
+ *
+ * gnostic-grpc generates a wholly new "request" object for each operation which then deviates from
+ * the original OpenAPI spec. This script repairs the generated proto file by removing these types.
+ * Note that we already defined "{operation}Request" in the prepare script, so we simply remove them
+ * here.
+ *
+ * Additionally, we add the "optional" keyword to fields that are not required in the OpenAPI spec.
+ *
+ * Lastly, we replace the service name and package name with the values specified in the OpenAPI spec.
+ *
+ */
 import fs from "fs-extra";
-import path from "path";
 
 async function main() {
-  //\w+ holds parameters to.*(\n[^}].*)*\n\}
-
   const inputPath = process.argv[2];
   const protoPath = process.argv[3] || inputPath;
 
@@ -33,6 +43,19 @@ async function main() {
           protoText = protoText.replace(originalPath, operation["x-original-path"]);
         }
       }
+    }
+
+    // protoText = protoText.replace("string description", "optional string description");
+    for (const [name, schema] of Object.entries(openapiSpec.components.schemas)) {
+      const optional = Object.keys(schema.properties ?? []).filter((p) => !schema.required?.includes(p));
+      protoText = !optional.length
+        ? protoText
+        : protoText.replace(new RegExp(`message ${name}(\\n|.)*?\\n\\}`, "g"), (m) => {
+            optional.forEach((p) => {
+              m = m.replace(new RegExp(`(\\s+)[\\w\\.]+ ${p} =`, "g"), (m, sp) => sp + "optional " + m.trim());
+            });
+            return m;
+          });
     }
 
     if (openapiSpec.info?.["x-service-name"]) {

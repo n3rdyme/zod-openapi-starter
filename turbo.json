@@ -3,6 +3,10 @@
   "cacheDir": ".turbo/cache",
   "globalDependencies": ["package.json", "tsconfig.json", "yarn.lock"],
   "tasks": {
+    "clean": {
+      "cache": false,
+      "outputs": []
+    },
     "build": {
       "outputLogs": "new-only",
       "dependsOn": ["^build"],
@@ -16,7 +20,7 @@
     "test": {
       "outputLogs": "new-only",
       "dependsOn": ["build"],
-      "outputs": [""]
+      "outputs": []
     },
     "for-each": {
       "cache": false,

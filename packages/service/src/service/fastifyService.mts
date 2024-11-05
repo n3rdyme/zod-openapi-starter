@@ -12,7 +12,7 @@ import { authMiddleware } from "../middleware/authMiddleware.mjs";
 import { errorHandler } from "../middleware/errorHandler.mjs";
 import { loggerOptions } from "../middleware/logger.mjs";
 import { fastifyHandlers } from "../service/fastifyHandlers.mjs";
-import { ajvDefaultOptions, createAjv } from "../middleware/ajv-validation.mjs";
+import { ajvDefaultOptions, createAjv } from "../middleware/ajvValidation.mjs";
 
 import openApiSpec from "@local/api";
 import { environment } from "../environment.mjs";

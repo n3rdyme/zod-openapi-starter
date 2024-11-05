@@ -1,6 +1,6 @@
 import { EnvironmentData } from "./generated/environmentData.mjs";
 import openapi from "@local/api";
-import { createAjv } from "./middleware/ajv-validation.mjs";
+import { createAjv } from "./middleware/ajvValidation.mjs";
 
 function loadEnvironmentData(): EnvironmentData {
   const ajv = createAjv();

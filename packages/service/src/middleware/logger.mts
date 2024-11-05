@@ -102,7 +102,24 @@ function setupLoggerOptions(): Pick<FastifyServerOptions, "logger" | "loggerInst
     // Custom serializers for additional logging context
     serializers: {
       req(request: FastifyRequest) {
-        return { method: request.method, url: request.url, query: request.query }; // Custom request logging
+        const operationId = request.routeOptions?.schema?.operationId;
+        return operationId ? { operationId } : { method: request.method, url: request.url, query: request.query }; // Custom request logging
+      },
+      res({ request, statusCode, elapsedTime }) {
+        const operationId = request?.routeOptions?.schema?.operationId;
+        const duration = !elapsedTime ? undefined : Math.floor(elapsedTime);
+        return operationId
+          ? { operationId, duration, statusCode }
+          : request
+            ? { method: request.method, url: request.url, query: request.query, duration, statusCode }
+            : { duration, statusCode }; // Custom response logging
+      },
+      err(error: Error) {
+        return {
+          type: error.name ?? "Error",
+          message: error.message,
+          stack: (error.stack ?? "").split("\n").slice(0, 5).join("\n"),
+        }; // Custom error logging
       },
     },
   };

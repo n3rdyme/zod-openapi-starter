@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
+ * ISSUE: https://github.com/fastify/fastify-response-validation/issues/124
+ *    PR: https://github.com/fastify/fastify-response-validation/pull/125/files#diff-af95cb6f5f65fe70216ddce70325e785438d5aaff956a0666ebf46ef6402f526
+ *
  * @fastify/response-validation - Fastify plugin to validate response schemas
  * https://github.com/fastify/fastify-response-validation/blob/master/index.js
  *

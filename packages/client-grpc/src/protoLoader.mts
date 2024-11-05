@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as grpc from "@grpc/grpc-js";
+import { Metadata, ChannelCredentials, loadPackageDefinition, ClientOptions } from "@grpc/grpc-js";
 import * as loader from "@grpc/proto-loader";
 import { TodoListService } from "./generated/example/todo/TodoListService.js";
 
@@ -8,10 +8,12 @@ import { fileURLToPath } from "url";
 
 type ServiceClientCtor = new (
   binding: string,
-  security: grpc.ChannelCredentials,
+  security: ChannelCredentials,
+  options?: ClientOptions,
 ) => TodoListService & {
-  grpcMetadataIn: grpc.Metadata;
-  grpcMetadataOut: grpc.Metadata;
+  close: () => Promise<void>;
+  grpcMetadataIn: Metadata;
+  grpcMetadataOut: Metadata;
 };
 
 export async function protoLoader(): Promise<ServiceClientCtor> {
@@ -32,7 +34,7 @@ export async function protoLoader(): Promise<ServiceClientCtor> {
 
   // Get the package and service definitions
 
-  const protoDescriptor: any = grpc.loadPackageDefinition(packageDefinition);
+  const protoDescriptor: any = loadPackageDefinition(packageDefinition);
   // navigate to the service definition by the path from protoDescriptor
   const svcPath = `${serviceSpec.info["x-package-name"]}.${serviceSpec.info["x-service-name"]}`.split(".");
   let yourService = protoDescriptor;
@@ -49,18 +51,19 @@ export async function protoLoader(): Promise<ServiceClientCtor> {
     lookup[value.originalName] = value.requestType?.type;
   });
 
-  function bindClient(this: any, binding: string, security: grpc.ChannelCredentials) {
+  function bindClient(this: any, binding: string, security: ChannelCredentials) {
     this.impl = new yourService(binding, security);
-    this.grpcMetadataIn = new grpc.Metadata();
-    this.grpcMetadataOut = new grpc.Metadata();
+
+    this.grpcMetadataIn = new Metadata();
+    this.grpcMetadataOut = new Metadata();
 
     for (const method of Object.keys(this.impl.constructor.prototype)) {
       const call = this.impl[method].bind(this.impl);
       this[method] = (req: any) => {
-        this.grpcMetadataOut = new grpc.Metadata();
+        this.grpcMetadataOut = new Metadata();
 
         return new Promise((done, reject) =>
-          call(req, this.grpcMetadataIn, (err: Error, response: any, trailer: grpc.Metadata) => {
+          call(req, this.grpcMetadataIn, (err: Error, response: any, trailer: Metadata) => {
             if (trailer) {
               this.grpcMetadataOut = trailer;
             }
@@ -72,6 +75,10 @@ export async function protoLoader(): Promise<ServiceClientCtor> {
         );
       };
     }
+
+    this.close = () => {
+      return Promise.resolve(this.impl.close());
+    };
   }
 
   return bindClient as unknown as ServiceClientCtor;

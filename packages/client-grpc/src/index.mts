@@ -1,27 +1,31 @@
 import { protoLoader } from "./protoLoader.mjs";
-import * as grpc from "@grpc/grpc-js";
+import { type ChannelOptions, credentials } from "@grpc/grpc-js";
 
-const TodoListService = await protoLoader();
-// Create a client instance
-const client = new TodoListService("localhost:3001", grpc.credentials.createInsecure());
+// Export all generated types
+// export * from "./generated/example/todo/TodoListService.js";
 
-async function main() {
-  const login = await client.login({ username: "admin", password: "password" });
-  console.log(login);
-  client.grpcMetadataIn.add("authorization", `Bearer ${login.token}`);
+// Make sure we only load the proto once
+const getService = (() => {
+  let service: ReturnType<typeof protoLoader>;
+  return async () => {
+    if (!service) {
+      service = protoLoader();
+    }
+    return service;
+  };
+})();
 
-  let item = await client.createTodo({ title: "This is a test" });
-  console.log(item);
+export type { ChannelOptions };
 
-  item = await client.updateTodo({ id: item.id, title: "This is an updated test" });
-  console.log(item);
-
-  const list = await client.getTodos({ completed: false });
-  console.log(list);
-
-  await client.deleteTodo({ id: item.id });
-
-  process.exit(0);
+/**
+ * Create a client instance for the TodoListService
+ * @param url The URL of the server in the format "host:port"
+ * @param options {ChannelOptions} Optional channel options
+ * @returns {TodoListService} A client instance
+ */
+export async function createClient(url: string, options?: ChannelOptions) {
+  // Create a client instance
+  const TodoListService = await getService();
+  const client = new TodoListService(url, credentials.createInsecure(), options);
+  return client;
 }
-
-main();

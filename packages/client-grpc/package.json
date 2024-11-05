@@ -7,7 +7,7 @@
     "clean": "rm -rf .turbo && rm -rf dist && rm -rf coverage && rm -rf src/generated && rm -rf src/proto",
     "build": "tsc",
     "lint": "eslint --fix --max-warnings=0 ./src",
-    "start": "NODE_NO_WARNINGS=1 node --loader ts-node/esm ./src/index.mts",
+    "start": "NODE_NO_WARNINGS=1 node --loader ts-node/esm ./src/test.mts",
     "for-each": "yarn"
   },
   "devDependencies": {

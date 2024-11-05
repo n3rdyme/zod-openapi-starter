@@ -10,7 +10,7 @@ import {
 } from "../service/errors.mjs";
 import type { Ajv } from "ajv";
 import { nanoid } from "nanoid";
-import { createAjv } from "../middleware/ajv-validation.mjs";
+import { createAjv } from "../middleware/ajvValidation.mjs";
 import { ApiContext, ApiRequest, newApiContext } from "../interfaces/apiContext.mjs";
 import { getHandlers } from "../handlers/index.mjs";
 import { fastify } from "../service/fastifyService.mjs";

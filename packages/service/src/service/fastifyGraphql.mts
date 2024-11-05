@@ -1,8 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createGraphQLSchema, Options as OpenApiToGraphOptions } from "openapi-to-graphql";
+import { createRequire } from "module";
+import type {
+  createGraphQLSchema as TypeCreateGraphQLSchema,
+  Options as OpenApiToGraphOptions,
+} from "openapi-to-graphql";
 import { FastifyInstance } from "fastify";
 import mercurius, { type MercuriusOptions } from "mercurius";
 import openApiSpec from "@local/api";
+
+// OpenAPI-to-GraphQL requires CommonJS-style imports
+const require = createRequire(import.meta.url);
+const openApiToGraphql = require("openapi-to-graphql");
+const createGraphQLSchema = openApiToGraphql.createGraphQLSchema as typeof TypeCreateGraphQLSchema;
 
 const pseudoUri = "fastify://localhost";
 
@@ -33,6 +42,7 @@ export function fastifyGraphql(app: FastifyInstance) {
   const openApiToGraphOptions: OpenApiToGraphOptions<any, any, any> = {
     fillEmptyResponses: true,
     baseUrl: pseudoUri,
+    viewer: false,
     fetch: async (url, options) => {
       // Use Fastify's own fetch mechanism to self-resolve the GraphQL requests
       const response = await app.inject({
@@ -82,7 +92,7 @@ export function fastifyGraphql(app: FastifyInstance) {
 
       app.register(mercurius, options);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       app.log.error(error, "Error creating GraphQL schema");
     });
 }

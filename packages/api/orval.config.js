@@ -42,7 +42,7 @@ module.exports = defineConfig({
   service: {
     output: {
       mode: "single",
-      target: "../service/src/service/fastifyHandlers.mts",
+      target: "../service/src/handlers/index.mts",
       schemas: "../service/src/generated",
       client: "fetch",
       fileExtension: ".mts",
@@ -58,7 +58,7 @@ module.exports = defineConfig({
     hooks: {
       afterAllFilesWrite: () => {
         fixAllImportExtensions(serviceOutput);
-        const fastifyHandlers = path.join(serviceOutput, "../service/fastifyHandlers.mts");
+        const getHandlersFile = path.join(serviceOutput, "../handlers/index.mts");
         // Ensure handlers directory exists
         const handlersDir = path.join(serviceOutput, "../handlers");
         if (!fs.existsSync(handlersDir)) {
@@ -81,8 +81,8 @@ module.exports = defineConfig({
               generateApiFunction(data);
             }
           });
-        // Overwrite fastifyHandlers
-        generateFastifyHandlers(fastifyHandlers);
+        // Overwrite getHandlersFile
+        generateGetHandlers(getHandlersFile);
       },
     },
     input: {
@@ -196,22 +196,27 @@ function generateApiFunction({ name, file, value: { doc, ...value } }) {
   );
 }
 
-function generateFastifyHandlers(fastifyHandlers) {
+function generateGetHandlers(getHandlersFile) {
   fs.writeFileSync(
-    fastifyHandlers,
+    getHandlersFile,
     [
       `/* eslint-disable */`,
-      `import { FastifyRequest, FastifyReply } from "fastify";`,
-      `import { fastifyStub } from "./fastifyStub.mjs";`,
+      `type ServerStubFactory<T extends Function> = (`,
+      `  name: string,`,
+      `  impl: () => Promise<{ [key: string]: Function }>,`,
+      `  successCode: string,`,
+      `  contentType: string,`,
+      `) => T;`,
       ``,
-      `export const fastifyHandlers: { [key: string]: (req: FastifyRequest, res: FastifyReply) => unknown } = {`,
+      `export const getHandlers = <T extends Function>(factory: ServerStubFactory<T>): { [key: string]:T } => ({`,
       ...Object.entries(operations).map(([name, value]) => {
         const success = value.response?.types?.success?.length !== 1 ? null : value.response.types.success[0];
-        const data = { name, successCode: success?.key ?? "200", contentType: success?.contentType };
+        const successCode = success?.key ?? "200";
+        const contentType = success?.contentType ?? "application/json";
         const pthName = value?.tags?.[0] ? `${value?.tags?.[0]}/${name}` : name;
-        return `  ${name}: (req, response) => fastifyStub(req, response, import("../handlers/${pthName}.mjs"), ${JSON.stringify(data)}),`;
+        return `  ${name}: factory("${name}", ()=> import("./${pthName}.mjs"), "${successCode}", "${contentType}"),`;
       }),
-      `};`,
+      `});`,
       ``,
     ].join("\n"),
     "utf-8",

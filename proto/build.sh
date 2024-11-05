@@ -73,18 +73,16 @@ mkdir -p ../packages/client-grpc/src/generated
   --ts_proto_opt=outputPartialMethods=true \
   $PACKAGE_PATH.proto
 
-cp $PACKAGE_PATH.json ../packages/service/src/grpc/serviceSpec.json
-
 # --ts_proto_opt=context=true \
   
 # Copy the .proto file to the client-grpc/proto directory
 mkdir -p ../packages/client-grpc/src/proto/google
 cp -r ./google/* ../packages/client-grpc/src/proto/google
-mkdir -p ../packages/client-grpc/src/proto/$GRPC_SERVICE_NAME
-cp -r $PACKAGE_DIR/*.proto ../packages/client-grpc/src/proto/$GRPC_SERVICE_NAME
+cp $PACKAGE_PATH.json ../packages/client-grpc/src/proto/serviceSpec.json
+cp $PACKAGE_PATH.proto ../packages/client-grpc/src/proto/serviceSpec.proto
 
 # Copy the .proto file to the service/src/proto directory
 mkdir -p ../packages/service/src/proto/google
 cp -r ./google/* ../packages/service/src/proto/google
-mkdir -p ../packages/service/src/proto/$GRPC_SERVICE_NAME
-cp -r $PACKAGE_DIR/*.proto ../packages/service/src/proto/$GRPC_SERVICE_NAME
+cp $PACKAGE_PATH.json ../packages/service/src/proto/serviceSpec.json
+cp $PACKAGE_PATH.proto ../packages/service/src/proto/serviceSpec.proto

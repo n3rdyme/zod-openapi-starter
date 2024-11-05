@@ -19,7 +19,7 @@ function loadEnvironmentData(): EnvironmentData {
     envData.jwtSecret = "Ash stnazg durbatulûk, ash nazg gimbatul";
   }
 
-  if (process.env.OTEL_SERVICE_NAME) {
+  if (process.env.OTEL_TRACE) {
     envData.openTelemetry = true;
   }
 

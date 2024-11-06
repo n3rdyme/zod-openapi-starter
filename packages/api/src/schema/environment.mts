@@ -9,5 +9,6 @@ export const EnvironmentDataSchema = z
     jwtSecret: z.string().min(21),
     corsOrigin: z.string().optional(),
     openTelemetry: z.boolean().optional(),
+    baseDirectory: z.string(),
   })
   .openapi("EnvironmentData");

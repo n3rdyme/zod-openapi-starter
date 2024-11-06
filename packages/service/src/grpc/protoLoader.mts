@@ -1,15 +1,13 @@
 import * as grpc from "@grpc/grpc-js";
 import * as loader from "@grpc/proto-loader";
 import type { OpenAPIV3 } from "openapi-types";
-
 import path from "path";
-import { fileURLToPath } from "url";
+import { environment } from "../environment.mjs";
 
 // Convert import.meta.url to a file path and then get the directory name
 
 export async function protoLoader(): Promise<{ service: grpc.ServiceDefinition; spec: OpenAPIV3.Document }> {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const protoPath = path.join(__dirname, "../proto/");
+  const protoPath = path.join(environment.baseDirectory, "./proto/");
   const protoService = path.join(protoPath, "serviceSpec.proto");
   const { default: serviceSpec } = await import("../proto/serviceSpec.json", { with: { type: "json" } });
 

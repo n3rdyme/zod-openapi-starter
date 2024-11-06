@@ -1,10 +1,13 @@
 import { EnvironmentData } from "./generated/environmentData.mjs";
 import openapi from "@local/api";
 import { createAjv } from "./middleware/ajvValidation.mjs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 function loadEnvironmentData(): EnvironmentData {
   const ajv = createAjv();
   const validate = ajv.compile<EnvironmentData>(openapi.components.schemas.EnvironmentData);
+  const baseDirectory = path.dirname(fileURLToPath(import.meta.url));
 
   const envData: Partial<EnvironmentData> = {
     env: (process.env.NODE_ENV ?? "development") as EnvironmentData["env"],
@@ -12,6 +15,7 @@ function loadEnvironmentData(): EnvironmentData {
     port: parseInt(process.env.PORT || process.env.NODE_PORT || "3000"),
     jwtSecret: process.env.JWT_SECRET,
     corsOrigin: process.env.CORS_ORIGIN,
+    baseDirectory,
   };
 
   if (envData.env !== "production") {

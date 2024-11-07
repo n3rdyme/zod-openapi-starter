@@ -8,7 +8,25 @@ cd "$(dirname "$0")"
 
 # Set the version you want to install
 PROTOC_VERSION="28.3"
-PROTOC_ZIP="protoc-$PROTOC_VERSION-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m).zip"
+
+# Detect OS and Architecture
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+# Set ARCH and adjust OS for supported values
+if [[ "$OS" == "darwin" ]]; then
+  OS="osx"
+  if [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
+    ARCH="universal_binary"
+  fi
+elif [[ "$OS" == "linux" ]]; then
+  if [[ "$ARCH" == "aarch64" ]]; then
+    ARCH="aarch_64"
+  fi
+else
+  echo "Unsupported OS: $OS, expected darwin or linux"
+  exit 1
+fi
 
 # Ensure that the user's go/bin directory is in the PATH
 if [[ ":$PATH:" != *":~/go/bin:"* ]]; then
@@ -49,15 +67,12 @@ if [ ! -f ./protoc ]; then
 
   # Download the specified version of protoc
   echo "Downloading protoc version $PROTOC_VERSION..."
-  # echo curl -sS -o ./.temp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/$PROTOC_ZIP"
-  
-  curl -LsSf "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/$PROTOC_ZIP" > ./.temp/protoc.zip
-  # | unzip -d ./.temp/
+  PROTOC_ZIP="protoc-$PROTOC_VERSION-$OS-$ARCH.zip"
+  PROTOC_URL="https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/$PROTOC_ZIP"
+  curl -LsSf $PROTOC_URL > ./.temp/protoc.zip
   
   # Unzip and install
   unzip -oq ./.temp/protoc.zip -d ./.temp/
-  # rm $PROTOC_ZIP
-
   mv ./.temp/bin/protoc ./protoc
   cp -r ./.temp/include/google .
 

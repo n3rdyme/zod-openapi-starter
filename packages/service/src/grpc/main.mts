@@ -33,7 +33,6 @@ export async function startGrpc() {
         process.exit(1);
       }
       console.log(`GRPC running at http://0.0.0.0:${port}`);
-      server?.start();
     },
   );
 }

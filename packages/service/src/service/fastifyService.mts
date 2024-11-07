@@ -3,7 +3,10 @@ import { nanoid } from "nanoid";
 import { fastifySwagger, SwaggerOptions, FastifyStaticSwaggerOptions, StaticDocumentSpec } from "@fastify/swagger";
 import { fastifySwaggerUi, FastifySwaggerUiOptions } from "@fastify/swagger-ui";
 import { fastifyOpenapiGlue, type FastifyOpenapiGlueOptions } from "fastify-openapi-glue";
-import { fastifyResponseValidation, type FastifyResponseValidationOptions } from "../middleware/responseValidation.mjs";
+import {
+  fastifyResponseValidation,
+  type Options as FastifyResponseValidationOptions,
+} from "@fastify/response-validation";
 import fastifyCors, { type FastifyCorsOptions } from "@fastify/cors";
 import fastifyJwt, { type FastifyJWTOptions } from "@fastify/jwt";
 import fastifyRateLimit, { type RateLimitPluginOptions, type errorResponseBuilderContext } from "@fastify/rate-limit";

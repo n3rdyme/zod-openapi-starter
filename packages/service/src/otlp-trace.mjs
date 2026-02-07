@@ -20,9 +20,9 @@ process.env.OTEL_SERVICE_NAME = process.env.OTEL_SERVICE_NAME || serviceName;
 const sdk = new NodeSDK({
   instrumentations: [new HttpInstrumentation(), new FastifyInstrumentation()],
   traceExporter: new OTLPTraceExporter(),
-  metricReader: new metrics.PeriodicExportingMetricReader({
+  metricReaders: [new metrics.PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter(),
-  }),
+  })],
 });
 
 process.on("beforeExit", async () => {

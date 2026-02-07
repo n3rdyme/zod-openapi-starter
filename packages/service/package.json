@@ -12,8 +12,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "start": "NODE_NO_WARNINGS=1 node ./dist/index.mjs",
-    "watch": "NODE_NO_WARNINGS=1 node --watch --loader ts-node/esm ./src/index.mts",
-    "trace": "NODE_NO_WARNINGS=1 OTEL_TRACE=true node --watch --loader ts-node/esm --import ./src/otlp-trace.mjs ./src/index.mts",
+    "watch": "NODE_NO_WARNINGS=1 yarn run -T tsx watch ./src/index.mts",
+    "trace": "NODE_NO_WARNINGS=1 OTEL_TRACE=true NODE_OPTIONS='--import ./src/otlp-trace.mjs' yarn run -T tsx watch ./src/index.mts",
     "for-each": "yarn"
   },
   "dependencies": {

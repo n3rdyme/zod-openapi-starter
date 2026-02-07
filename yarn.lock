@@ -5494,7 +5494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-tsconfig@npm:^4.10.1":
+"get-tsconfig@npm:^4.10.1, get-tsconfig@npm:^4.7.5":
   version: 4.13.6
   resolution: "get-tsconfig@npm:4.13.6"
   dependencies:
@@ -9237,6 +9237,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsx@npm:^4.21.0":
+  version: 4.21.0
+  resolution: "tsx@npm:4.21.0"
+  dependencies:
+    esbuild: "npm:~0.27.0"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.5"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: 10c0/f5072923cd8459a1f9a26df87823a2ab5754641739d69df2a20b415f61814322b751fa6be85db7c6ec73cf68ba8fac2fd1cfc76bdb0aa86ded984d84d5d2126b
+  languageName: node
+  linkType: hard
+
 "turbo-darwin-64@npm:2.8.3":
   version: 2.8.3
   resolution: "turbo-darwin-64@npm:2.8.3"
@@ -10111,6 +10127,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.5.5"
     prettier: "npm:^3.8.1"
     ts-proto: "npm:^2.11.2"
+    tsx: "npm:^4.21.0"
     turbo: "npm:^2.8.3"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.3.1"

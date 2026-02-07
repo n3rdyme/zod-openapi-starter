@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 import fs from "fs-extra";
 import { build } from "esbuild";
+import { glob } from "glob";
+
+// Get all .mts files excluding test files
+const entryPoints = glob.sync("src/**/*.mts", { ignore: "src/**/*.test.mts" });
 
 build({
-  entryPoints: ["src/**/*.mts", "src/proto/**"],
+  entryPoints: [...entryPoints, "src/proto/**"],
   minify: true,
   bundle: false,
   splitting: false,

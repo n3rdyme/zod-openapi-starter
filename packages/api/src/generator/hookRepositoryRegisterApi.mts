@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { OpenAPIRegistry, RouteConfig } from "@asteasolutions/zod-to-openapi";
+import { OpenAPIRegistry, RouteConfig, getOpenApiMetadata } from "@asteasolutions/zod-to-openapi";
 import { RouteParameter, ZodRequestBody } from "@asteasolutions/zod-to-openapi/dist/openapi-registry";
 import { type ZodObject, type ZodTypeAny } from "zod";
 import { getApiExtensions } from "./options.mjs";
@@ -69,9 +69,11 @@ function repositoryRegisterApi(this: OpenAPIRegistry, api: ApiEndpoint) {
     paramsSchema = requestSchema.pick(paramMask).openapi({});
 
     if (bodyParams.length > 0) {
-      const openapiArgs = requestSchema._def.openapi;
+      const openapiMetadata = getOpenApiMetadata(requestSchema);
       requestSchema = requestSchema.omit(paramMask);
-      requestSchema._def.openapi = openapiArgs;
+      if (openapiMetadata) {
+        requestSchema = requestSchema.openapi(openapiMetadata as any);
+      }
     } else {
       requestSchema = undefined;
     }

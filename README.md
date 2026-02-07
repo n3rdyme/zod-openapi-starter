@@ -120,7 +120,6 @@ This setup offers a highly structured environment for consistent, scalable, and 
 ### Core Dependencies
 
 - **[Fastify](https://www.fastify.io/)**: A fast and low overhead web framework for Node.js.
-
   - **[@fastify/cors](https://github.com/fastify/fastify-cors)**: Cross-Origin Resource Sharing (CORS) for Fastify.
   - **[@fastify/helmet](https://github.com/fastify/fastify-helmet)**: Helmet integration for Fastify to add security headers.
   - **[@fastify/jwt](https://github.com/fastify/fastify-jwt)**: JSON Web Token (JWT) authentication for Fastify.
@@ -130,7 +129,6 @@ This setup offers a highly structured environment for consistent, scalable, and 
   - **[@fastify/swagger-ui](https://github.com/fastify/fastify-swagger)**: Swagger UI for interactive API documentation.
 
 - **[@grpc/grpc-js](https://www.npmjs.com/package/@grpc/grpc-js)**: gRPC server runtime.
-
   - **[@grpc/proto-loader](https://www.npmjs.com/package/@grpc/proto-loader)**: Loads `.proto` files directly for use with gRPC.
 
 - **[ajv](https://ajv.js.org/)**: JSON Schema Validator.

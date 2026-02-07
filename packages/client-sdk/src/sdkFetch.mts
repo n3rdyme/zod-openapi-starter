@@ -8,7 +8,7 @@ import { FetchError } from "./fetchError.mjs";
  * @returns A promise that resolves to the response { data: json(); status }
  * @throws {FetchError} If the response status is not OK
  */
-export async function sdkFetch<TResult extends Promise<{ data: unknown; status: number }>>(
+export async function sdkFetch<TResult extends { data: unknown; status: number }>(
   url: string,
   request: RequestInit & { baseUrl?: string },
 ): Promise<TResult> {
@@ -21,5 +21,5 @@ export async function sdkFetch<TResult extends Promise<{ data: unknown; status: 
   return Promise.resolve({
     data: response.status === 204 ? null : await response.json(),
     status: response.status,
-  }) as TResult;
+  }) as unknown as TResult;
 }
